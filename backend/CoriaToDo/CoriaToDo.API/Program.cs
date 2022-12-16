@@ -3,6 +3,7 @@ using CoriaToDo.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Configuration;
+using System.Runtime.CompilerServices;
 
 namespace CoriaToDo.API
 {
@@ -29,6 +30,8 @@ namespace CoriaToDo.API
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+
+                MigrateDb(app);
             }
 
             app.UseHttpsRedirection();
@@ -39,6 +42,13 @@ namespace CoriaToDo.API
             app.MapControllers();
 
             app.Run();
+        }
+
+        static void MigrateDb(WebApplication app)
+        {
+            using var scope = app.Services.CreateScope();
+
+            scope.ServiceProvider.GetService<ToDoDbContext>().Database.Migrate();
         }
     }
 }
