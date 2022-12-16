@@ -21,16 +21,16 @@ public class TodoController : ControllerBase
         return items;
     }
 
+    [HttpPost]
     public async Task<IActionResult> Add(AddToDoItemRequest requestItem)
     {
         if (requestItem == null)
             return BadRequest();
-
-        toDoDbContext.ToDoItems.Add(
-            new ToDoItem() { Title = requestItem.Title });
+        var newToDo = new ToDoItem() { Title = requestItem.Title };
+        toDoDbContext.ToDoItems.Add(newToDo);
 
         await toDoDbContext.SaveChangesAsync();
 
-        return Ok();
+        return Ok(new AddToDoItemResponse { Id = newToDo.Id });
     }
 }
