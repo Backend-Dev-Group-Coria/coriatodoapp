@@ -26,11 +26,46 @@ public class TodoController : ControllerBase
     {
         if (requestItem == null)
             return BadRequest();
+
         var newToDo = new ToDoItem() { Title = requestItem.Title };
         toDoDbContext.ToDoItems.Add(newToDo);
 
         await toDoDbContext.SaveChangesAsync();
 
         return Ok(new AddToDoItemResponse { Id = newToDo.Id });
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> Update(UpdateToDoItemRequest request)
+    {
+        if (request == null || request.Id <= 0 || string.IsNullOrWhiteSpace(request.Title))
+            return BadRequest();
+
+        //todo: check userid for security
+
+        var item = await toDoDbContext.ToDoItems.FirstOrDefaultAsync(i => i.Id == request.Id);
+        if (item == null)
+        {
+            return BadRequest();
+        }
+
+        item.Title = request.Title;
+        await toDoDbContext.SaveChangesAsync();
+        return Ok();
+    }
+
+    [HttpDelete]
+    [Route("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        //todo: check userid for security
+        var item = await toDoDbContext.ToDoItems.FirstOrDefaultAsync(i => i.Id == id);
+        if (item == null)
+        {
+            return BadRequest();
+        }
+        toDoDbContext.ToDoItems.Remove(item);
+        await toDoDbContext.SaveChangesAsync();
+        return Ok();
     }
 }
