@@ -3,6 +3,7 @@ using CoriaToDo.API.Data;
 using CoriaToDo.API.Feature.Todo.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 namespace CoriaToDo.API.Feature.Todo;
 
@@ -11,8 +12,10 @@ namespace CoriaToDo.API.Feature.Todo;
 public class TodoController : ControllerBase
 {
     private readonly ToDoDbContext toDoDbContext;
-    public TodoController(ToDoDbContext toDoDbContext)
+    private readonly IMapper mapper;
+    public TodoController(ToDoDbContext toDoDbContext, IMapper mapper)
     {
+        this.mapper = mapper;
         this.toDoDbContext = toDoDbContext;
     }
 
@@ -29,7 +32,7 @@ public class TodoController : ControllerBase
         if (requestItem == null)
             return BadRequest();
 
-        var newToDo = new ToDoItem() { Title = requestItem.Title };
+        var newToDo = mapper.Map<ToDoItem>(requestItem);
         toDoDbContext.ToDoItems.Add(newToDo);
 
         await toDoDbContext.SaveChangesAsync();
