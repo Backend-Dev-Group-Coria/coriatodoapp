@@ -1,10 +1,6 @@
 
 using CoriaToDo.API.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using System.Configuration;
-using System.Runtime.CompilerServices;
-
 namespace CoriaToDo.API
 {
     public static class Program
@@ -22,6 +18,8 @@ namespace CoriaToDo.API
 
             builder.Services.AddDbContext<ToDoDbContext>(options =>
                options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresDefaultConnection")));
+
+            builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
             var app = builder.Build();
 

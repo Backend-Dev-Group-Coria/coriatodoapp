@@ -4,6 +4,8 @@ using CoriaToDo.API.Feature.Todo.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+namespace CoriaToDo.API.Feature.Todo;
+
 [Route("api/[controller]")]
 [ApiController]
 public class TodoController : ControllerBase
