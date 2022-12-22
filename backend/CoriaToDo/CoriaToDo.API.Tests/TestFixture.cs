@@ -30,13 +30,13 @@ namespace CoriaToDo.API.Tests
             dbContext.Database.Migrate();
             return dbContext;
         }
-        
+
         private HttpClient CreateHttpClient(IConfigurationRoot configurationRoot)
         {
             var application = new WebApplicationFactory<Program>()
                     .WithWebHostBuilder(builder =>
                     {
-                        builder.UseEnvironment("test");
+                        builder.UseEnvironment("Test");
                         builder.UseConfiguration(configurationRoot);
                     });
             return application.CreateClient();
