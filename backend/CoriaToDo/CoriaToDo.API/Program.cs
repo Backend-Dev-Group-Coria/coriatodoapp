@@ -3,7 +3,7 @@ using CoriaToDo.API.Data;
 using Microsoft.EntityFrameworkCore;
 namespace CoriaToDo.API
 {
-    public static class Program
+    public class Program
     {
         public static void Main(string[] args)
         {
