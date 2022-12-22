@@ -73,4 +73,21 @@ public class TodoController : ControllerBase
         await toDoDbContext.SaveChangesAsync();
         return Ok();
     }
+
+    [HttpPost]
+    [Route("{id}/complete")]
+    public async Task<IActionResult> Complete(int id)
+    {
+        //todo: check userid for security
+        var item = await toDoDbContext.ToDoItems.FirstOrDefaultAsync(i => i.Id == id);
+        if (item == null)
+        {
+            return BadRequest();
+        }
+        item.Completed = true;
+
+        await toDoDbContext.SaveChangesAsync();
+        return Ok();
+    }
+
 }
