@@ -1,7 +1,13 @@
+using System.Net.Http;
+using CoriaToDo.API.Data;
+
 namespace CoriaToDo.API.Tests
 {
-    public class ToDoTest
+    public class TestFixture
     {
+        HttpClient _httpClient;
+        ToDoDbContext _dbContext;
+
         [Fact]
         public void AddToDoAddsRowToDB()
         {
