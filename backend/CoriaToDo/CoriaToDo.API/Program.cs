@@ -1,12 +1,17 @@
 
 using CoriaToDo.API.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Data.Common;
+
 namespace CoriaToDo.API
 {
     public class Program
     {
         public static void Main(string[] args)
         {
+            // Load environment variables from .env file (if it exists)
+            DotEnv.Load();
+
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
@@ -17,14 +22,14 @@ namespace CoriaToDo.API
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddDbContext<ToDoDbContext>(options =>
-               options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresDefaultConnection")));
+               options.UseNpgsql(ChangeDbHostNameIfNeeded(builder.Configuration.GetConnectionString("PostgresDefaultConnection"))));
 
             builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsEnvironment("Local") || app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
@@ -40,6 +45,16 @@ namespace CoriaToDo.API
             app.MapControllers();
 
             app.Run();
+        }
+
+        public static string ChangeDbHostNameIfNeeded(string connString)
+        {
+            var dbHost = Environment.GetEnvironmentVariable("DB_HOST_NAME");
+            if (!string.IsNullOrEmpty(dbHost))
+            {
+                connString = connString.Replace("localhost", dbHost);
+            }
+            return connString;
         }
 
         static void MigrateDb(WebApplication app)
