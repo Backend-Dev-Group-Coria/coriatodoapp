@@ -2,16 +2,33 @@ using CoriaToDo.API.Data;
 using CoriaToDo.API.Feature.Todo.Model;
 using FluentAssertions;
 using System.Net.Http.Json;
+using Microsoft.EntityFrameworkCore;
 
 namespace CoriaToDo.API.Tests
 {
     public class ToDoTest : IClassFixture<TestFixture>
     {
         TestFixture _testFixture;
+        private int _userId = 1;
+        private int _testItemId;
 
         public ToDoTest(TestFixture fixture)
         {
             _testFixture = fixture;
+            InitilizeData();
+        }
+
+        private void InitilizeData()
+        {
+            var testItem = new ToDoItem
+            {
+                Title = "Test 1",
+                CreatedDate = DateTime.UtcNow,
+                UserId = _userId
+            };
+            _testFixture.DbContext.ToDoItems.Add(testItem);
+            _testFixture.DbContext.SaveChanges();
+            _testItemId = testItem.Id;
         }
 
         [Fact]
@@ -29,7 +46,6 @@ namespace CoriaToDo.API.Tests
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
             var result = await response.Content.ReadFromJsonAsync<AddToDoItemResponse>();
             result.Id.Should().BeGreaterThan(0);
-
         }
 
         [Fact]
@@ -39,23 +55,23 @@ namespace CoriaToDo.API.Tests
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
         }
 
-        //[Fact]
-        //public async Task UpdateToDoUpdatesRowInDB()
-        //{
-        //    // Given JSON { title }
-        //    var updateTodo = new UpdateToDoItemRequest
-        //    {
-        //        Title = "Test",
-        //        Id
-        //    };
-        //    // When POST /ToDo is called 
-        //    var response = await _testFixture.HttpClient.PostAsJsonAsync("api/Todo", newTodo);
+        [Fact]
+        public async Task UpdateToDoUpdatesTask()
+        {
+            // Given JSON { title }
+            var updateTodo = new UpdateToDoItemRequest
+            {
+                Id = _testItemId,
+                Title = "Test 2",
+            };
+            // when PUT is called
+            var response = await _testFixture.HttpClient.PutAsJsonAsync("api/Todo", updateTodo);
 
-        //    // Then new DB row exists and returns OK()
-        //    response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
-        //    var result = await response.Content.ReadFromJsonAsync<AddToDoItemResponse>();
-        //    result.Id.Should().BeGreaterThan(0);
+            // Then item should change
 
-        //}
+            response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
+            _testFixture.DbContext.ToDoItems.AsNoTracking().FirstOrDefault(i => i.Id == _testItemId).Title.Should().Be("Test 2");
+
+        }
     }
 }

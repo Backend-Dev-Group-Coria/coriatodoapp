@@ -37,7 +37,7 @@ namespace CoriaToDo.API.Tests
             var application = new WebApplicationFactory<Program>()
                     .WithWebHostBuilder(builder =>
                     {
-                        builder.UseEnvironment("Test");
+                        builder.UseEnvironment(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Test");
                         builder.UseConfiguration(configurationRoot);
                     });
             return application.CreateClient();
@@ -61,7 +61,7 @@ namespace CoriaToDo.API.Tests
             _dbContext.ToDoItems.RemoveRange(_dbContext.ToDoItems);
             _dbContext.SaveChanges();
             _httpClient.Dispose();
-            _dbContext.Dispose();           
+            _dbContext.Dispose();
         }
     }
 }
