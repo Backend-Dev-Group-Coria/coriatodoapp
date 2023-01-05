@@ -38,5 +38,24 @@ namespace CoriaToDo.API.Tests
             var response = await _testFixture.HttpClient.GetAsync("api/Todo");
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
         }
+
+        //[Fact]
+        //public async Task UpdateToDoUpdatesRowInDB()
+        //{
+        //    // Given JSON { title }
+        //    var updateTodo = new UpdateToDoItemRequest
+        //    {
+        //        Title = "Test",
+        //        Id
+        //    };
+        //    // When POST /ToDo is called 
+        //    var response = await _testFixture.HttpClient.PostAsJsonAsync("api/Todo", newTodo);
+
+        //    // Then new DB row exists and returns OK()
+        //    response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
+        //    var result = await response.Content.ReadFromJsonAsync<AddToDoItemResponse>();
+        //    result.Id.Should().BeGreaterThan(0);
+
+        //}
     }
 }

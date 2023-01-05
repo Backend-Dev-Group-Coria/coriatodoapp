@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace CoriaToDo.API.Tests
 {
-    public class TestFixture
+    public class TestFixture : IDisposable
     {
         HttpClient _httpClient;
         ToDoDbContext _dbContext;
@@ -54,6 +54,14 @@ namespace CoriaToDo.API.Tests
             configurationBuilder.AddEnvironmentVariables();
             var config = configurationBuilder.Build();
             return config;
+        }
+
+        public virtual void Dispose()
+        {
+            _dbContext.ToDoItems.RemoveRange(_dbContext.ToDoItems);
+            _dbContext.SaveChanges();
+            _httpClient.Dispose();
+            _dbContext.Dispose();           
         }
     }
 }
