@@ -26,7 +26,7 @@ namespace CoriaToDo.API.Tests
         private ToDoDbContext GetDatabaseContext(IConfigurationRoot configurationRoot)
         {
             var options = new DbContextOptionsBuilder<ToDoDbContext>()
-                .UseNpgsql(Program.ChangeDbHostNameIfNeeded(configurationRoot.GetConnectionString("PostgresTestConnection"))).Options;
+                .UseNpgsql(Program.ChangeDbHostNameIfNeeded(configurationRoot.GetConnectionString("PostgresDefaultConnection"))).Options;
             var dbContext = new ToDoDbContext(options);
             dbContext.Database.Migrate();
             return dbContext;
@@ -45,14 +45,12 @@ namespace CoriaToDo.API.Tests
 
         private static IConfigurationRoot InitializeConfiguration()
         {
-            // Load environment variables from .env file (if it exists)
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Test";
             DotEnv.Load();
-
-            //var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             //Console.WriteLine(environment);
             IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
-            configurationBuilder.AddJsonFile($"appsettings.json");
-            //configurationBuilder.AddJsonFile($"appsettings.{environment}.json");
+            //configurationBuilder.AddJsonFile($"appsettings.json");
+            configurationBuilder.AddJsonFile($"appsettings.{environment}.json");
             configurationBuilder.AddEnvironmentVariables();
             var config = configurationBuilder.Build();
             return config;
