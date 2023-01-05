@@ -12,9 +12,15 @@ namespace CoriaToDo.API.Tests
         private int _userId = 1;
         private int _testItemId;
 
+        ToDoDbContext _dbContext;
+        HttpClient _httpClient;
+
         public ToDoTest(TestFixture fixture)
         {
             _testFixture = fixture;
+            _dbContext = fixture.DbContext;
+            _httpClient = fixture.HttpClient;
+
             InitilizeData();
         }
 
@@ -71,6 +77,19 @@ namespace CoriaToDo.API.Tests
 
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
             _testFixture.DbContext.ToDoItems.AsNoTracking().FirstOrDefault(i => i.Id == _testItemId).Title.Should().Be("Test 2");
+
+        }
+
+        [Fact]
+        public async Task CompleteToDoSetTaskCompleted()
+        {
+            // when POST is called
+            var response = await _testFixture.HttpClient.PostAsync($"api/Todo/{_testItemId}/complete", null);
+
+            // Then item should be set to completed
+
+            response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
+            _testFixture.DbContext.ToDoItems.AsNoTracking().FirstOrDefault(i => i.Id == _testItemId).Completed.Should().BeTrue();
 
         }
     }
