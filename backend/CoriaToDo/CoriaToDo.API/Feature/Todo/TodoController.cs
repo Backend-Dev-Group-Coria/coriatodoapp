@@ -91,7 +91,7 @@ public class TodoController : ControllerBase
     }
 
     [HttpPost]
-    [Route("/reorder")]
+    [Route("reorder")]
     public async Task<IActionResult> Reorder(ReorderToDoItemsRequest request)
     {
         //todo: check userid for security

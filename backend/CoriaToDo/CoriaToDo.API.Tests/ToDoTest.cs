@@ -21,10 +21,10 @@ namespace CoriaToDo.API.Tests
             _dbContext = fixture.DbContext;
             _httpClient = fixture.HttpClient;
 
-            InitilizeData(5);
+            InitializeData(5);
         }
 
-        private void InitilizeData(int count)
+        private void InitializeData(int count)
         {
             for (int i = 0; i < count; i++)
             {
@@ -32,7 +32,8 @@ namespace CoriaToDo.API.Tests
                 {
                     Title = $"Test {i}",
                     CreatedDate = DateTime.UtcNow,
-                    UserId = _userId
+                    UserId = _userId,
+                    Order = i + 1
                 };
 
                 _testFixture.DbContext.ToDoItems.Add(testItem);
