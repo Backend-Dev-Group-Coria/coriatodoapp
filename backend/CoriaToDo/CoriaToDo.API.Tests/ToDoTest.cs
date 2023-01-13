@@ -21,20 +21,26 @@ namespace CoriaToDo.API.Tests
             _dbContext = fixture.DbContext;
             _httpClient = fixture.HttpClient;
 
-            InitilizeData();
+            InitilizeData(5);
         }
 
-        private void InitilizeData()
+        private void InitilizeData(int count)
         {
-            var testItem = new ToDoItem
+            for(int i=0; i<count; i++)
             {
-                Title = "Test 1",
-                CreatedDate = DateTime.UtcNow,
-                UserId = _userId
-            };
-            _testFixture.DbContext.ToDoItems.Add(testItem);
+                var testItem = new ToDoItem
+                {
+                    Title = $"Test {i}",
+                    CreatedDate = DateTime.UtcNow,
+                    UserId = _userId
+                };
+
+                _testFixture.DbContext.ToDoItems.Add(testItem);
+            }
+
             _testFixture.DbContext.SaveChanges();
-            _testItemId = testItem.Id;
+            _testItemId = _testFixture.DbContext.ToDoItems.Last().Id;
+
         }
 
         [Fact]
@@ -68,7 +74,7 @@ namespace CoriaToDo.API.Tests
             var updateTodo = new UpdateToDoItemRequest
             {
                 Id = _testItemId,
-                Title = "Test 2",
+                Title = "Test Updated",
             };
             // when PUT is called
             var response = await _testFixture.HttpClient.PutAsJsonAsync("api/Todo", updateTodo);
@@ -76,7 +82,7 @@ namespace CoriaToDo.API.Tests
             // Then item should change
 
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
-            _testFixture.DbContext.ToDoItems.AsNoTracking().FirstOrDefault(i => i.Id == _testItemId).Title.Should().Be("Test 2");
+            _testFixture.DbContext.ToDoItems.AsNoTracking().FirstOrDefault(i => i.Id == _testItemId).Title.Should().Be("Test Updated");
 
         }
 
@@ -90,6 +96,26 @@ namespace CoriaToDo.API.Tests
 
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
             _testFixture.DbContext.ToDoItems.AsNoTracking().FirstOrDefault(i => i.Id == _testItemId).Completed.Should().BeTrue();
+
+        }
+
+        [Fact]
+        public async Task TaskReorderToDo()
+        {
+            var allTodoItems = _testFixture.DbContext.ToDoItems.ToList();
+
+            var reoderToDo = new ReorderToDoItemsRequest
+            {
+                InsertBeforeId = allTodoItems[1].Id,
+                TodoIds = new List<int> { allTodoItems[3].Id, allTodoItems[4].Id }
+            };
+
+            var response = await _testFixture.HttpClient.PostAsJsonAsync("api/Todo/reorder", reoderToDo);
+
+            // Add GET call here
+
+            //response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
+            //_testFixture.DbContext.ToDoItems.AsNoTracking().FirstOrDefault(i => i.Id == _testItemId).Completed.Should().BeTrue();
 
         }
     }
