@@ -15,7 +15,7 @@ namespace CoriaToDo.API.Migrations
                 table: "ToDoItems",
                 type: "double precision",
                 nullable: false,
-                defaultValue: 0.0);
+                defaultValue: null);
         }
 
         /// <inheritdoc />

@@ -1,4 +1,6 @@
-﻿namespace CoriaToDo.API.Data
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace CoriaToDo.API.Data
 {
     public class ToDoItem
     {

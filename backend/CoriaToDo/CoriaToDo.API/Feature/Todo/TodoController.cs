@@ -22,7 +22,7 @@ public class TodoController : ControllerBase
     [HttpGet]
     public async Task<List<ToDoItem>> List()
     {
-        var items = await toDoDbContext.ToDoItems.ToListAsync();
+        var items = await toDoDbContext.ToDoItems.OrderBy(i => i.Order).ToListAsync();
         return items;
     }
 
@@ -97,7 +97,7 @@ public class TodoController : ControllerBase
         //todo: check userid for security
         var insertBeforeItem = await toDoDbContext.ToDoItems.FirstOrDefaultAsync(i => i.Id == request.InsertBeforeId);
         var insertAfterItem = await toDoDbContext.ToDoItems.Where(i => i.Order < insertBeforeItem.Order)
-                                                           .OrderByDescending( i => i.Order)
+                                                           .OrderByDescending(i => i.Order)
                                                            .FirstOrDefaultAsync();
         var lowerOrder = insertAfterItem != null ? insertAfterItem.Order : 0;
         double higherOrder;
@@ -107,8 +107,16 @@ public class TodoController : ControllerBase
             higherOrder = await toDoDbContext.ToDoItems.MaxAsync(i => i.Order) + 1;
         }
 
+        var delta = (higherOrder - lowerOrder) / (request.TodoIds.Count + 1);
+        var multiplicator = 1;
+        foreach (var itemId in request.TodoIds)
+        {
+            var item = await toDoDbContext.ToDoItems.FirstOrDefaultAsync(i => i.Id == itemId);
+            item.Order = lowerOrder + (delta * multiplicator);
+            multiplicator++;
+        }
+        await toDoDbContext.SaveChangesAsync();
 
-        //await toDoDbContext.SaveChangesAsync();
         return Ok();
     }
 }
