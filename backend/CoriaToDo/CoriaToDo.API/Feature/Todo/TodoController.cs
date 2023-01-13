@@ -90,4 +90,25 @@ public class TodoController : ControllerBase
         return Ok();
     }
 
+    [HttpPost]
+    [Route("/reorder")]
+    public async Task<IActionResult> Reorder(ReorderToDoItemsRequest request)
+    {
+        //todo: check userid for security
+        var insertBeforeItem = await toDoDbContext.ToDoItems.FirstOrDefaultAsync(i => i.Id == request.InsertBeforeId);
+        var insertAfterItem = await toDoDbContext.ToDoItems.Where(i => i.Order < insertBeforeItem.Order)
+                                                           .OrderByDescending( i => i.Order)
+                                                           .FirstOrDefaultAsync();
+        var lowerOrder = insertAfterItem != null ? insertAfterItem.Order : 0;
+        double higherOrder;
+        if (insertBeforeItem != null) higherOrder = insertBeforeItem.Order;
+        else
+        {
+            higherOrder = await toDoDbContext.ToDoItems.MaxAsync(i => i.Order) + 1;
+        }
+
+
+        //await toDoDbContext.SaveChangesAsync();
+        return Ok();
+    }
 }

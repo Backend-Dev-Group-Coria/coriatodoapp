@@ -11,5 +11,7 @@
         public DateTime CreatedDate { get; set; }
 
         public int UserId { get; set; }
+
+        public double Order { get; set; }
     }
 }
