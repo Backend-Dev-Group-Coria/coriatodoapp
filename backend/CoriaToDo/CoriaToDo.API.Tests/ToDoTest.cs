@@ -26,7 +26,7 @@ namespace CoriaToDo.API.Tests
 
         private void InitilizeData(int count)
         {
-            for(int i=0; i<count; i++)
+            for (int i = 0; i < count; i++)
             {
                 var testItem = new ToDoItem
                 {
@@ -39,8 +39,7 @@ namespace CoriaToDo.API.Tests
             }
 
             _testFixture.DbContext.SaveChanges();
-            _testItemId = _testFixture.DbContext.ToDoItems.Last().Id;
-
+            _testItemId = _testFixture.DbContext.ToDoItems.OrderBy(x => x.Id).Last().Id;
         }
 
         [Fact]
@@ -76,7 +75,7 @@ namespace CoriaToDo.API.Tests
                 Id = _testItemId,
                 Title = "Test Updated",
             };
-            // when PUT is called
+            // When PUT is called
             var response = await _testFixture.HttpClient.PutAsJsonAsync("api/Todo", updateTodo);
 
             // Then item should change
@@ -89,7 +88,7 @@ namespace CoriaToDo.API.Tests
         [Fact]
         public async Task CompleteToDoSetTaskCompleted()
         {
-            // when POST is called
+            // When POST is called
             var response = await _testFixture.HttpClient.PostAsync($"api/Todo/{_testItemId}/complete", null);
 
             // Then item should be set to completed
@@ -102,21 +101,25 @@ namespace CoriaToDo.API.Tests
         [Fact]
         public async Task TaskReorderToDo()
         {
+            // Given TODO Items
             var allTodoItems = _testFixture.DbContext.ToDoItems.ToList();
 
+            // When reorder items is called 
             var reoderToDo = new ReorderToDoItemsRequest
             {
                 InsertBeforeId = allTodoItems[1].Id,
                 TodoIds = new List<int> { allTodoItems[3].Id, allTodoItems[4].Id }
             };
 
-            var response = await _testFixture.HttpClient.PostAsJsonAsync("api/Todo/reorder", reoderToDo);
+            var reorderResponse = await _testFixture.HttpClient.PostAsJsonAsync("api/Todo/reorder", reoderToDo);
 
-            // Add GET call here
+            // Then list should be reordered
+            var listResponse = await _testFixture.HttpClient.GetAsync("api/Todo");
+            var todoList = await listResponse.Content.ReadFromJsonAsync<List<ToDoItem>>();
+            var expectedIdslist = new List<int> { allTodoItems[0].Id, allTodoItems[3].Id, allTodoItems[4].Id, allTodoItems[1].Id, allTodoItems[2].Id };
+            var currentIdsList = todoList.Select(t => t.Id).ToList();
 
-            //response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
-            //_testFixture.DbContext.ToDoItems.AsNoTracking().FirstOrDefault(i => i.Id == _testItemId).Completed.Should().BeTrue();
-
+            currentIdsList.Should().BeEquivalentTo(expectedIdslist, o => o.WithStrictOrdering());
         }
     }
 }
