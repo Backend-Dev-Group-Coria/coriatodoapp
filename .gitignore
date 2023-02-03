@@ -1,2 +1,3 @@
 .vscode/
 /backend/CoriaToDo/.env
+backend/CoriaToDo/CoriaToDo.API.Tests/coveragereport/
