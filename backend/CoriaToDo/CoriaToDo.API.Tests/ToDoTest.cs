@@ -13,6 +13,7 @@ namespace CoriaToDo.API.Tests
         private int _testItemId;
         private ToDoItem _testItem;
         private SessionContext _sessionContext;
+        private int _testUserId = 9999;
 
         ToDoDbContext _dbContext;
         HttpClient _httpClient;
@@ -23,6 +24,7 @@ namespace CoriaToDo.API.Tests
             _dbContext = fixture.DbContext;
             _httpClient = fixture.HttpClient;
             _sessionContext = sessionContext;
+            _sessionContext.UserId = _testUserId;
 
             InitializeData(5);
         }
@@ -78,6 +80,14 @@ namespace CoriaToDo.API.Tests
         }
 
         [Fact]
+        public async Task ToDoShouldReturnOnlyMyItems()
+        {
+            var response = await _testFixture.HttpClient.GetAsync("api/Todo");
+            var result = await response.Content.ReadFromJsonAsync<List<ToDoItem>>();
+            result.All(i => i.UserId != _sessionContext.UserId).Should().BeTrue();
+        }
+
+        [Fact]
         public async Task UpdateToDoUpdatesTask()
         {
             // Given JSON { title }
@@ -96,6 +106,30 @@ namespace CoriaToDo.API.Tests
             var updatedToDoItem = _testFixture.DbContext.ToDoItems.AsNoTracking().FirstOrDefault(i => i.Id == _testItemId);
 
             updatedToDoItem.Title.Should().Be("Test Updated");
+        }
+
+        [Fact]
+        public async Task UpdatingOherPeoplesItemShouldThrowError()
+        {
+            _sessionContext.UserId = -1;
+
+            // Given JSON { title }
+            var updateTodo = new UpdateToDoItemRequest
+            {
+                Id = _testItemId,
+                Title = "Test Updated",
+            };
+            // When PUT is called
+            var response = await _testFixture.HttpClient.PutAsJsonAsync("api/Todo", updateTodo);
+
+            // Then item should change
+
+            response.StatusCode.Should().Be(System.Net.HttpStatusCode.Forbidden);
+
+            var updatedToDoItem = _testFixture.DbContext.ToDoItems.AsNoTracking().FirstOrDefault(i => i.Id == _testItemId);
+
+            updatedToDoItem.Title.Should().NotBe("Test Updated");
+            updatedToDoItem.UserId.Should().Be(_testUserId);
         }
 
         [Fact]

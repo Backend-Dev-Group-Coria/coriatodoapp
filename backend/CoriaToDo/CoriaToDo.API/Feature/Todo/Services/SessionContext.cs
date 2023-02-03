@@ -3,6 +3,7 @@
 public class SessionContext
 {
     private IHttpContextAccessor _httpContextAccessor;
+    private int _userId = 1;
 
     public SessionContext(IHttpContextAccessor httpContextAccessor) 
     {
@@ -11,6 +12,7 @@ public class SessionContext
 
     public int UserId
     {
-        get { return 1; }
+        get { return _userId; }
+        set { _userId = value; }
     }
 }
