@@ -4,6 +4,7 @@ using CoriaToDo.API.Feature.Todo.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+using CoriaToDo.API.Feature.Todo.Services;
 
 namespace CoriaToDo.API.Feature.Todo;
 
@@ -13,9 +14,12 @@ public class TodoController : ControllerBase
 {
     private readonly ToDoDbContext toDoDbContext;
     private readonly IMapper mapper;
-    public TodoController(ToDoDbContext toDoDbContext, IMapper mapper)
+    private readonly SessionContext _sessionContext;
+
+    public TodoController(ToDoDbContext toDoDbContext, IMapper mapper, SessionContext sessionContext)
     {
         this.mapper = mapper;
+        _sessionContext = sessionContext;
         this.toDoDbContext = toDoDbContext;
     }
 

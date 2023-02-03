@@ -1,5 +1,6 @@
 
 using CoriaToDo.API.Data;
+using CoriaToDo.API.Feature.Todo.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Data.Common;
 
@@ -17,6 +18,7 @@ namespace CoriaToDo.API
             // Add services to the container.
 
             builder.Services.AddControllers();
+            ConfigureDependencyInjection(builder.Services);
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -41,10 +43,14 @@ namespace CoriaToDo.API
 
             app.UseAuthorization();
 
-
             app.MapControllers();
 
             app.Run();
+        }
+
+        private static void ConfigureDependencyInjection(IServiceCollection services)
+        {
+            services.AddScoped<SessionContext>();
         }
 
         public static string ChangeDbHostNameIfNeeded(string connString)
