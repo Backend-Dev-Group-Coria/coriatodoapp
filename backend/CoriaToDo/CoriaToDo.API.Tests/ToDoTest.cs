@@ -11,33 +11,40 @@ namespace CoriaToDo.API.Tests
     {
         TestFixture _testFixture;
         private int _testItemId;
-        private ToDoItem _testItem;
-        private SessionContext _sessionContext;
+        private ToDoItem _testItem;       
         private int _testUserId = 9999;
-
+        
         ToDoDbContext _dbContext;
         HttpClient _httpClient;
 
-        public ToDoTest(TestFixture fixture, SessionContext sessionContext)
+        public ToDoTest(TestFixture fixture)
         {
             _testFixture = fixture;
             _dbContext = fixture.DbContext;
             _httpClient = fixture.HttpClient;
-            _sessionContext = sessionContext;
-            _sessionContext.UserId = _testUserId;
-
+             var p = _testFixture.HttpClient.PostAsJsonAsync<string>($"api/Auth/Login/{_testUserId}", null).Result;
             InitializeData(5);
         }
 
         private void InitializeData(int count)
         {
-            for (int i = 0; i < count; i++)
+            var testItem = new ToDoItem
             {
-                var testItem = new ToDoItem
+                Title = $"Test From other user",
+                CreatedDate = DateTime.UtcNow,
+                UserId = _testUserId + 1,
+                Order = 1
+            };
+
+            _testFixture.DbContext.ToDoItems.Add(testItem);
+
+            for (int i = 1; i < count; i++)
+            {
+                testItem = new ToDoItem
                 {
                     Title = $"Test {i}",
-                    CreatedDate = DateTime.UtcNow,
-                    UserId = _sessionContext.UserId,
+                    CreatedDate = DateTime.UtcNow,       
+                    UserId = _testUserId,
                     Order = i + 1
                 };
 
@@ -47,7 +54,6 @@ namespace CoriaToDo.API.Tests
 
             _testFixture.DbContext.SaveChanges();
             _testItemId = _testItem.Id;
-
         }
 
         [Fact]
@@ -69,7 +75,7 @@ namespace CoriaToDo.API.Tests
             var addedToDoItem = _testFixture.DbContext.ToDoItems.FirstOrDefault(i => i.Id == result.Id);
 
             addedToDoItem.Order.Should().Be(_testItem.Order + 1);
-            addedToDoItem.UserId.Should().Be(_sessionContext.UserId);
+            addedToDoItem.UserId.Should().Be(_testUserId);
         }
 
         [Fact]
@@ -84,7 +90,7 @@ namespace CoriaToDo.API.Tests
         {
             var response = await _testFixture.HttpClient.GetAsync("api/Todo");
             var result = await response.Content.ReadFromJsonAsync<List<ToDoItem>>();
-            result.All(i => i.UserId != _sessionContext.UserId).Should().BeTrue();
+            result.Any(i => i.UserId != _testUserId).Should().BeTrue();
         }
 
         [Fact]
@@ -111,7 +117,7 @@ namespace CoriaToDo.API.Tests
         [Fact]
         public async Task UpdatingOherPeoplesItemShouldThrowError()
         {
-            _sessionContext.UserId = -1;
+            var p = _testFixture.HttpClient.PostAsJsonAsync<string>($"api/Auth/Login/-1", null).Result;
 
             // Given JSON { title }
             var updateTodo = new UpdateToDoItemRequest
