@@ -11,6 +11,7 @@ namespace CoriaToDo.API.Tests
         TestFixture _testFixture;
         private int _userId = 1;
         private int _testItemId;
+        private ToDoItem _testItem;
 
         ToDoDbContext _dbContext;
         HttpClient _httpClient;
@@ -37,10 +38,12 @@ namespace CoriaToDo.API.Tests
                 };
 
                 _testFixture.DbContext.ToDoItems.Add(testItem);
+                _testItem = testItem;
             }
 
             _testFixture.DbContext.SaveChanges();
-            _testItemId = _testFixture.DbContext.ToDoItems.OrderBy(x => x.Id).Last().Id;
+            _testItemId = _testItem.Id;
+
         }
 
         [Fact]
@@ -58,6 +61,7 @@ namespace CoriaToDo.API.Tests
             response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
             var result = await response.Content.ReadFromJsonAsync<AddToDoItemResponse>();
             result.Id.Should().BeGreaterThan(0);
+            _testFixture.DbContext.ToDoItems.FirstOrDefault(i => i.Id == result.Id).Order.Should().Be(_testItem.Order + 1);
         }
 
         [Fact]

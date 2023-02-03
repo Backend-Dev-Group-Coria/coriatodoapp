@@ -32,7 +32,9 @@ public class TodoController : ControllerBase
         if (requestItem == null)
             return BadRequest();
 
+        var nextOrder = await toDoDbContext.ToDoItems.MaxAsync(i => i.Order) + 1;
         var newToDo = mapper.Map<ToDoItem>(requestItem);
+        newToDo.Order = nextOrder;
         toDoDbContext.ToDoItems.Add(newToDo);
 
         await toDoDbContext.SaveChangesAsync();
