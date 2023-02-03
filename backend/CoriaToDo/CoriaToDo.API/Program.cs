@@ -51,6 +51,7 @@ namespace CoriaToDo.API
         private static void ConfigureDependencyInjection(IServiceCollection services)
         {
             services.AddScoped<SessionContext>();
+            services.AddHttpContextAccessor();
         }
 
         public static string ChangeDbHostNameIfNeeded(string connString)
