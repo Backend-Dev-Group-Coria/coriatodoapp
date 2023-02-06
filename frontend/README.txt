@@ -1,6 +1,5 @@
 Commands to run:
 
-  cd coriatodo
+  cd CoriaToDo
   npm install
-  npm run lint
   npm run dev
