@@ -36,7 +36,17 @@ public class TodoController : ControllerBase
         if (requestItem == null)
             return BadRequest();
 
-        var nextOrder = await toDoDbContext.ToDoItems.MaxAsync(i => i.Order) + 1;
+        double nextOrder;
+        try
+        {
+            nextOrder = await toDoDbContext.ToDoItems.MaxAsync(i => i.Order) + 1;
+        }       
+        catch (System.InvalidOperationException)
+        {
+            //If there is no data it will throw no sequence exception and we set nextOrder to 1
+            nextOrder = 1;
+        }
+      
         var newToDo = mapper.Map<ToDoItem>(requestItem);
         newToDo.Order = nextOrder;
         toDoDbContext.ToDoItems.Add(newToDo);
