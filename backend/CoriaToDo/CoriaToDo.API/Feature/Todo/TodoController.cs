@@ -1,10 +1,10 @@
 
+using AutoMapper;
 using CoriaToDo.API.Data;
 using CoriaToDo.API.Feature.Todo.Model;
+using CoriaToDo.API.Feature.Todo.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using AutoMapper;
-using CoriaToDo.API.Feature.Todo.Services;
 
 namespace CoriaToDo.API.Feature.Todo;
 
@@ -26,7 +26,7 @@ public class TodoController : ControllerBase
     [HttpGet]
     public async Task<List<ToDoItem>> List()
     {
-        var items = await toDoDbContext.ToDoItems.OrderBy(i => i.Order).ToListAsync();
+        var items = await toDoDbContext.ToDoItems.Where(i => i.UserId == _sessionContext.UserId).OrderBy(i => i.Order).ToListAsync();
         return items;
     }
 
@@ -40,15 +40,16 @@ public class TodoController : ControllerBase
         try
         {
             nextOrder = await toDoDbContext.ToDoItems.MaxAsync(i => i.Order) + 1;
-        }       
+        }
         catch (System.InvalidOperationException)
         {
             //If there is no data it will throw no sequence exception and we set nextOrder to 1
             nextOrder = 1;
         }
-      
+
         var newToDo = mapper.Map<ToDoItem>(requestItem);
         newToDo.Order = nextOrder;
+        newToDo.UserId = _sessionContext.UserId;
         toDoDbContext.ToDoItems.Add(newToDo);
 
         await toDoDbContext.SaveChangesAsync();
@@ -62,12 +63,15 @@ public class TodoController : ControllerBase
         if (request == null || request.Id <= 0 || string.IsNullOrWhiteSpace(request.Title))
             return BadRequest();
 
-        //todo: check userid for security
-
         var item = await toDoDbContext.ToDoItems.FirstOrDefaultAsync(i => i.Id == request.Id);
         if (item == null)
         {
             return BadRequest();
+        }
+        else if (item.UserId != _sessionContext.UserId)
+        {
+            //todo: return forbid when we set proper authentication
+            return StatusCode(403);
         }
 
         item.Title = request.Title;

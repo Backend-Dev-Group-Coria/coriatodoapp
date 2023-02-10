@@ -2,10 +2,10 @@
 
 public class SessionContext
 {
-    private IHttpContextAccessor _httpContextAccessor;
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private int _userId = 1;
 
-    public SessionContext(IHttpContextAccessor httpContextAccessor) 
+    public SessionContext(IHttpContextAccessor httpContextAccessor)
     {
         _httpContextAccessor = httpContextAccessor;
     }

@@ -50,7 +50,7 @@ namespace CoriaToDo.API
 
         private static void ConfigureDependencyInjection(IServiceCollection services)
         {
-            services.AddScoped<SessionContext>();
+            services.AddSingleton<SessionContext>();
             services.AddHttpContextAccessor();
         }
 

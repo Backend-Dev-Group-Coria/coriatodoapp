@@ -11,9 +11,9 @@ namespace CoriaToDo.API.Tests
     {
         TestFixture _testFixture;
         private int _testItemId;
-        private ToDoItem _testItem;       
+        private ToDoItem _testItem;
         private int _testUserId = 9999;
-        
+
         ToDoDbContext _dbContext;
         HttpClient _httpClient;
 
@@ -22,7 +22,7 @@ namespace CoriaToDo.API.Tests
             _testFixture = fixture;
             _dbContext = fixture.DbContext;
             _httpClient = fixture.HttpClient;
-             var p = _testFixture.HttpClient.PostAsJsonAsync<string>($"api/Auth/Login/{_testUserId}", null).Result;
+            var p = _testFixture.HttpClient.PostAsJsonAsync<string>($"api/Auth/Login/{_testUserId}", null).Result;
             InitializeData(5);
         }
 
@@ -43,7 +43,7 @@ namespace CoriaToDo.API.Tests
                 testItem = new ToDoItem
                 {
                     Title = $"Test {i}",
-                    CreatedDate = DateTime.UtcNow,       
+                    CreatedDate = DateTime.UtcNow,
                     UserId = _testUserId,
                     Order = i + 1
                 };
@@ -62,7 +62,7 @@ namespace CoriaToDo.API.Tests
             // Given JSON { title }
             var newTodo = new AddToDoItemRequest
             {
-                Title = "Test"         
+                Title = "Test"
             };
             // When POST /ToDo is called 
             var response = await _testFixture.HttpClient.PostAsJsonAsync("api/Todo", newTodo);
@@ -90,7 +90,7 @@ namespace CoriaToDo.API.Tests
         {
             var response = await _testFixture.HttpClient.GetAsync("api/Todo");
             var result = await response.Content.ReadFromJsonAsync<List<ToDoItem>>();
-            result.Any(i => i.UserId != _testUserId).Should().BeTrue();
+            result.Any(i => i.UserId != _testUserId).Should().BeFalse();
         }
 
         [Fact]
