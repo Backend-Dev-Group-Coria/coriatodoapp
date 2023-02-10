@@ -5,6 +5,7 @@ using CoriaToDo.API.Feature.Todo.Model;
 using CoriaToDo.API.Feature.Todo.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.Versioning;
 
 namespace CoriaToDo.API.Feature.Todo;
 
@@ -64,15 +65,8 @@ public class TodoController : ControllerBase
             return BadRequest();
 
         var item = await toDoDbContext.ToDoItems.FirstOrDefaultAsync(i => i.Id == request.Id);
-        if (item == null)
-        {
-            return BadRequest();
-        }
-        else if (item.UserId != _sessionContext.UserId)
-        {
-            //todo: return forbid when we set proper authentication
-            return StatusCode(403);
-        }
+        var result = ValidateUpdateItem(item);
+        if (result != null) { return result; }
 
         item.Title = request.Title;
         await toDoDbContext.SaveChangesAsync();
@@ -85,10 +79,9 @@ public class TodoController : ControllerBase
     {
         //todo: check userid for security
         var item = await toDoDbContext.ToDoItems.FirstOrDefaultAsync(i => i.Id == id);
-        if (item == null)
-        {
-            return BadRequest();
-        }
+        var result = ValidateUpdateItem(item);
+        if (result != null) { return result; }
+
         toDoDbContext.ToDoItems.Remove(item);
         await toDoDbContext.SaveChangesAsync();
         return Ok();
@@ -100,10 +93,9 @@ public class TodoController : ControllerBase
     {
         //todo: check userid for security
         var item = await toDoDbContext.ToDoItems.FirstOrDefaultAsync(i => i.Id == id);
-        if (item == null)
-        {
-            return BadRequest();
-        }
+        var result = ValidateUpdateItem(item);
+        if (result != null) { return result; }
+
         item.Completed = true;
 
         await toDoDbContext.SaveChangesAsync();
@@ -139,4 +131,19 @@ public class TodoController : ControllerBase
 
         return Ok();
     }
+
+    private StatusCodeResult ValidateUpdateItem(ToDoItem item)
+    {
+        if (item == null)
+        {
+            return BadRequest();
+        }
+        else if (item.UserId != _sessionContext.UserId)
+        {
+            //todo: return forbid when we set proper authentication
+            return StatusCode(403);
+        }
+        return null;
+    }
+
 }
