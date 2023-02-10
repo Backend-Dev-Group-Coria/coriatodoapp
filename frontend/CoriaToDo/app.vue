@@ -7,8 +7,8 @@
   </div>
 </template>
 
-<script setup>
-const { data: todoItems } = useFetch("http://localhost:5067/api/Todo",);
+<script setup lang="ts">
+const { data: todoItems } = useFetch<any>("http://localhost:5067/api/Todo",);
 </script>
 
 
