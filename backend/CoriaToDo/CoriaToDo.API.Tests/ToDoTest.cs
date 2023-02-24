@@ -115,7 +115,7 @@ namespace CoriaToDo.API.Tests
         }
 
         [Fact]
-        public async Task UpdatingOherPeoplesItemShouldThrowError()
+        public async Task UpdatingOtherPeoplesItemShouldThrowError()
         {
             var p = _testFixture.HttpClient.PostAsJsonAsync<string>($"api/Auth/Login/-1", null).Result;
 
@@ -155,13 +155,13 @@ namespace CoriaToDo.API.Tests
         public async Task TaskReorderToDo()
         {
             // Given TODO Items
-            var allTodoItems = _testFixture.DbContext.ToDoItems.ToList();
+            var allTodoItems = _testFixture.DbContext.ToDoItems.Where(x => x.UserId == _testUserId).OrderBy(x => x.Order).ToList();
 
             // When reorder items is called 
             var reoderToDo = new ReorderToDoItemsRequest
             {
                 InsertBeforeId = allTodoItems[1].Id,
-                TodoIds = new List<int> { allTodoItems[3].Id, allTodoItems[4].Id }
+                TodoIds = new List<int> { allTodoItems[2].Id, allTodoItems[3].Id }
             };
 
             var reorderResponse = await _testFixture.HttpClient.PostAsJsonAsync("api/Todo/reorder", reoderToDo);
@@ -169,10 +169,28 @@ namespace CoriaToDo.API.Tests
             // Then list should be reordered
             var listResponse = await _testFixture.HttpClient.GetAsync("api/Todo");
             var todoList = await listResponse.Content.ReadFromJsonAsync<List<ToDoItem>>();
-            var expectedIdslist = new List<int> { allTodoItems[0].Id, allTodoItems[3].Id, allTodoItems[4].Id, allTodoItems[1].Id, allTodoItems[2].Id };
+            var expectedIdslist = new List<int> { allTodoItems[0].Id, allTodoItems[2].Id, allTodoItems[3].Id, allTodoItems[1].Id };
             var currentIdsList = todoList.Select(t => t.Id).ToList();
 
             currentIdsList.Should().BeEquivalentTo(expectedIdslist, o => o.WithStrictOrdering());
+        }
+
+        [Fact]
+        public async Task ReorderingOtherPeoplesItemShouldThrowError()
+        {
+            // Given TODO Items
+            var allTodoItems = _testFixture.DbContext.ToDoItems.OrderBy(x => x.Order).ToList();
+
+            // When reorder items is called 
+            var reoderToDo = new ReorderToDoItemsRequest
+            {
+                InsertBeforeId = allTodoItems[0].Id,
+                TodoIds = new List<int> { allTodoItems[2].Id, allTodoItems[3].Id }
+            };
+
+            var reorderResponse = await _testFixture.HttpClient.PostAsJsonAsync("api/Todo/reorder", reoderToDo);
+
+            reorderResponse.StatusCode.Should().Be(System.Net.HttpStatusCode.Forbidden);
         }
     }
 }
