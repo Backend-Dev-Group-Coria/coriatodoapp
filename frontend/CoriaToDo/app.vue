@@ -8,8 +8,7 @@
 </template>
 
 <script setup lang="ts">
-const { data: login } = useFetch<any>("http://localhost:5067/login/1",{method: 'POST'});
-console.log(login);
+const { data: login } = await useFetch<any>("http://localhost:5067/api/auth/login/0",{method: 'POST'});
 const { data: todoItems } = useFetch<any>("http://localhost:5067/api/Todo",);
-  console.log(todoItems);
+console.log(todoItems);
 </script>

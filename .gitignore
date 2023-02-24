@@ -2,3 +2,4 @@
 /backend/CoriaToDo/.env
 backend/CoriaToDo/CoriaToDo.API.Tests/coveragereport/
 package-lock.json
+frontend/coriatodo/.vs/
