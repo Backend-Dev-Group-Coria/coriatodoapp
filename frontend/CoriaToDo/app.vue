@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>CoriaToDo App</h1>
-    <ul v-if="todoItems">
+    <ul v-if="todoItems && todoItems.length">
       <li v-for="item in todoItems" :key="item.id">{{ item.title }}</li>
     </ul>
   </div>
@@ -18,11 +18,11 @@ onMounted(() => {
 })
 
 async function login(id: number) {
-  await useFetch<any>(`http://localhost:5067/api/auth/login/${id}`, {method: 'POST'});
+  await useFetch<any>(`http://localhost:5067/api/auth/login/${id}`, { method: "POST"});
 }
 
 async function getToDoItems() {
-  const { data: items } = useFetch<any>("http://localhost:5067/api/Todo",);
+  const { data: items } = await useFetch<any>("http://localhost:5067/api/Todo",);
   todoItems.value = items.value
 }
 </script>
