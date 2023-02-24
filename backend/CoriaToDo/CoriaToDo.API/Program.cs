@@ -8,6 +8,8 @@ namespace CoriaToDo.API
 {
     public class Program
     {
+        private const string CORS_FILTER_NAME = "AllowMyOrigin";
+
         public static void Main(string[] args)
         {
             // Load environment variables from .env file (if it exists)
@@ -28,6 +30,16 @@ namespace CoriaToDo.API
 
             builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
+            builder.Services.AddCors(c =>
+            {
+                c.AddPolicy(CORS_FILTER_NAME, option =>
+                {
+                    option.WithOrigins(builder.Configuration.GetValue<string>("FrontEndHost"))
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();
+                });
+            });
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -38,6 +50,8 @@ namespace CoriaToDo.API
 
                 MigrateDb(app);
             }
+
+            app.UseCors(CORS_FILTER_NAME);
 
             app.UseHttpsRedirection();
 
