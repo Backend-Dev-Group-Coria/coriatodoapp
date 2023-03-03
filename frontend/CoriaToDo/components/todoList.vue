@@ -10,18 +10,14 @@
 <script setup lang="ts">
 import { Ref, ref, onMounted } from 'vue';
 import { TodoItem } from '../models/todo-item';
+import todoApi from '../api/todo.api'
 
 const todoItems: Ref<TodoItem[]> = ref([])
 
-onMounted(() => {
-  getToDoItems()
+onMounted(async () => {
+  todoItems.value = await todoApi.getToDoItems()
 })
 
-
-async function getToDoItems() {
-  const { data: items } = await useFetch<TodoItem[]>("http://localhost:5067/api/Todo",);
-  todoItems.value = items.value ?? []
-}
 </script>
 
 <style>
