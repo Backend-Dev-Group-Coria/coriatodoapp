@@ -19,7 +19,7 @@ onMounted(() => {
 })
 
 async function login(id: number) {
-  await useFetch<any>(`http://localhost:5067/api/auth/login/${id}`, { method: "POST"});
+  await fetch(`http://localhost:5067/api/auth/login/${id}`, { method: "POST"});
 }
 
 async function getToDoItems() {
