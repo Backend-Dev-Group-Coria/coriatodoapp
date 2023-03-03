@@ -4,7 +4,7 @@
     <ul v-if="todoItems && todoItems.length">
       <li v-for="item in todoItems" :key="item.id" :class="{ underline: item.completed }">{{ item.title }}</li>
     </ul>
-    <input v-model="newTodoItemTitle" placeholder="Add new..." @input="onInput" @keyup.enter="onEnter" />
+    <input v-model="newTodoItemTitle" placeholder="Add new..." @keyup.enter="addNew" />
   </div>
 </template>
 
@@ -17,18 +17,21 @@ const todoItems: Ref<TodoItem[]> = ref([])
 const newTodoItemTitle: Ref<string> = ref("")
 
 
-onMounted(async () => {
-  todoItems.value = await todoApi.getToDoItems()
+onMounted(() => {
+  getToDoItems()
 })
 
-function onInput()
+async function addNew()
 {
-  console.log(newTodoItemTitle.value)
+  const item = await todoApi.addItem(newTodoItemTitle.value)
+  if (!item) return 
+  item.title = newTodoItemTitle.value
+  todoItems.value.push(item)
+  newTodoItemTitle.value = ''
 }
 
-function onEnter()
-{
-  console.log('Miro je pritisnul enter.')
+async function getToDoItems() {
+  todoItems.value = await todoApi.getToDoItems()
 }
 
 </script>

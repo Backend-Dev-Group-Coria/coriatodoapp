@@ -14,7 +14,7 @@ onMounted(() => {
 })
 
 async function login(id: number) {
-  await fetch(`http://localhost:5067/api/auth/login/${id}`, { method: "POST"});
+  await useFetch(`http://localhost:5067/api/auth/login/${id}`, { method: "POST"});
 }
 
 </script>
