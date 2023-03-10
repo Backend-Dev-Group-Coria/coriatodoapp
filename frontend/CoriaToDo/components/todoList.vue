@@ -4,7 +4,7 @@
     <ul v-if="todoItems && todoItems.length">
       <li v-for="item in todoItems" :key="item.id" :class="{ underline: item.completed }">
 
-        <input :ref="item.id.toString" v-model="item.title" :hidden="!item.isEditing" v-on:keyup.enter="onEditingItem(item, false)" v-on:focusout="onEditingItem(item, false)" autofocus />
+        <input v-model="item.title" :hidden="!item.isEditing" v-on:keyup.enter="updateItem(item)" v-on:focusout="onEditingItem(item, false)" autofocus />
         <span :hidden="item.isEditing" v-on:dblclick="onEditingItem(item, true)">{{ item.title }}</span>
 
         <input v-model="item.completed" type="checkbox" :disabled="item.completed" v-on:input="completeItem(item.id)"/>
@@ -55,6 +55,11 @@ async function completeItem(itemId: number) {
 
 function onEditingItem(item: TodoItem, edit: boolean ) {
   item.isEditing = edit
+}
+
+async function updateItem(item: TodoItem){
+  await todoApi.updateItem(item)
+  item.isEditing = false
 }
 
 </script>

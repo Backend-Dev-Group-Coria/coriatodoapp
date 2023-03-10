@@ -29,18 +29,24 @@ class TodoApi
         });
     }
 
+    async updateItem(item: TodoItem)
+    {
+        return this.sendRequest(`http://localhost:5067/api/Todo`, 'PUT', JSON.stringify({ id: item.id, title: item.title }))
+    }
+
     async deleteItem(itemId: number)
     {
-        return this.sendRequest(`http://localhost:5067/api/Todo/${itemId}`, 'DELETE')
+        return this.sendRequest(`http://localhost:5067/api/Todo/${itemId}`, 'DELETE', '')
     }
 
     async completeItem(itemId: number) {
-        return this.sendRequest(`http://localhost:5067/api/Todo/${itemId}/complete`,'POST')
+        return this.sendRequest(`http://localhost:5067/api/Todo/${itemId}/complete`,'POST', '')
     }
 
-    sendRequest(url: string, method: string) {
+    sendRequest(url: string, method: string, body: string) {
         return fetch(url, {
             method: method,
+            body: body,
             headers: {
                 "Content-type": "application/json; charset=UTF-8"
             }
