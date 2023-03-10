@@ -3,7 +3,10 @@
     <h1>List Name</h1>
     <ul v-if="todoItems && todoItems.length">
       <li v-for="item in todoItems" :key="item.id" :class="{ underline: item.completed }">
-        {{ item.title }}
+
+        <input :ref="item.id.toString" v-model="item.title" :hidden="!item.isEditing" v-on:keyup.enter="onEditingItem(item, false)" v-on:focusout="onEditingItem(item, false)" autofocus />
+        <span :hidden="item.isEditing" v-on:dblclick="onEditingItem(item, true)">{{ item.title }}</span>
+
         <input v-model="item.completed" type="checkbox" :disabled="item.completed" v-on:input="completeItem(item.id)"/>
         <button v-on:click="deleteItem(item.id)">Delete</button>
       </li>
@@ -19,7 +22,6 @@ import todoApi from '../api/todo.api'
 
 const todoItems: Ref<TodoItem[]> = ref([])
 const newTodoItemTitle: Ref<string> = ref("")
-
 
 onMounted(() => {
   getToDoItems()
@@ -49,6 +51,10 @@ async function deleteItem(itemId: number)
 
 async function completeItem(itemId: number) {
     await todoApi.completeItem(itemId)
+}
+
+function onEditingItem(item: TodoItem, edit: boolean ) {
+  item.isEditing = edit
 }
 
 </script>

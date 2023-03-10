@@ -2,5 +2,6 @@ export interface TodoItem {
     id: number,
     title: string
     completed: boolean,
-    createdDate: Date
+    createdDate: Date,
+    isEditing: boolean
 }
