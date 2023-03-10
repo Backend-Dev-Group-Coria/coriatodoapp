@@ -2,7 +2,10 @@
   <div>
     <h1>List Name</h1>
     <ul v-if="todoItems && todoItems.length">
-      <li v-for="item in todoItems" :key="item.id" :class="{ underline: item.completed }">{{ item.title }}</li>
+      <li v-for="item in todoItems" :key="item.id" :class="{ underline: item.completed }">
+        {{ item.title }}
+        <button v-on:click="deleteItem(item.id)">Delete</button>
+      </li>
     </ul>
     <input v-model="newTodoItemTitle" placeholder="Add new..." @keyup.enter="addNew" />
   </div>
@@ -32,6 +35,12 @@ async function addNew()
 
 async function getToDoItems() {
   todoItems.value = await todoApi.getToDoItems()
+}
+
+async function deleteItem(itemId: number)
+{
+  await todoApi.deleteItem(itemId)
+  getToDoItems()
 }
 
 </script>

@@ -28,5 +28,19 @@ class TodoApi
             return null
         });
     }
+
+    async deleteItem(itemId: number)
+    {
+        return fetch(`http://localhost:5067/api/Todo/${itemId}`,{
+            method: 'DELETE',
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        })
+        .catch((error)=> {
+            console.log(error);
+            return null
+        });
+    }
 }
 export default new TodoApi()
