@@ -39,8 +39,11 @@ async function getToDoItems() {
 
 async function deleteItem(itemId: number)
 {
-  await todoApi.deleteItem(itemId)
-  getToDoItems()
+    await todoApi.deleteItem(itemId)
+    let i = todoItems.value.findIndex(e => e.id === itemId)
+    if (i >= 0) {
+        todoItems.value.splice(i, 1)
+    }
 }
 
 </script>
