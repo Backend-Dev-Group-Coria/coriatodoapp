@@ -31,16 +31,25 @@ class TodoApi
 
     async deleteItem(itemId: number)
     {
-        return fetch(`http://localhost:5067/api/Todo/${itemId}`,{
-            method: 'DELETE',
+        return this.sendRequest(`http://localhost:5067/api/Todo/${itemId}`, 'DELETE')
+    }
+
+    async completeItem(itemId: number) {
+        return this.sendRequest(`http://localhost:5067/api/Todo/${itemId}/complete`,'POST')
+    }
+
+    sendRequest(url: string, method: string) {
+        return fetch(url, {
+            method: method,
             headers: {
                 "Content-type": "application/json; charset=UTF-8"
             }
         })
-        .catch((error)=> {
+        .catch((error) => {
             console.log(error);
             return null
         });
+
     }
 }
 export default new TodoApi()

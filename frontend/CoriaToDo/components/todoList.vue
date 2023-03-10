@@ -4,6 +4,7 @@
     <ul v-if="todoItems && todoItems.length">
       <li v-for="item in todoItems" :key="item.id" :class="{ underline: item.completed }">
         {{ item.title }}
+        <input v-model="item.completed" type="checkbox" :disabled="item.completed" v-on:input="completeItem(item.id)"/>
         <button v-on:click="deleteItem(item.id)">Delete</button>
       </li>
     </ul>
@@ -44,6 +45,10 @@ async function deleteItem(itemId: number)
     if (i >= 0) {
         todoItems.value.splice(i, 1)
     }
+}
+
+async function completeItem(itemId: number) {
+    await todoApi.completeItem(itemId)
 }
 
 </script>
