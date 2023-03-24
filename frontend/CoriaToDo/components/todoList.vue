@@ -4,7 +4,7 @@
     <ul v-if="todoItems && todoItems.length">
       <li v-for="item in todoItems" :key="item.id" :class="{ underline: item.completed }">
 
-        <input v-if="item.isEditing" v-model="item.title" @keyup.enter="updateItem(item)" @blur="onEditingItem(item, false)">
+        <input ref="editField" v-if="item.isEditing" v-model="item.title" @keyup.enter="updateItem(item)" @blur="onEditingItem(item, false)">
         <span v-else @dblclick="onEditingItem(item, true)">{{ item.title }}</span>
 
         <input v-model="item.completed" type="checkbox" :disabled="item.completed" @input="completeItem(item.id)"/>
@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { Ref, ref, onMounted} from 'vue';
+import { Ref, ref, onMounted, nextTick} from 'vue';
 import { TodoItem } from '../models/todo-item';
 import todoApi from '../api/todo.api'
 
@@ -53,8 +53,14 @@ async function completeItem(itemId: number) {
     await todoApi.completeItem(itemId)
 }
 
-function onEditingItem(item: TodoItem, edit: boolean ) {
+const editField: any = ref(null)
+
+function onEditingItem(item: TodoItem, edit: boolean ) {    
   item.isEditing = edit
+  if(!edit){ return }
+  nextTick(()=> {    
+    editField.value[0].focus()
+  })  
 }
 
 async function updateItem(item: TodoItem){
