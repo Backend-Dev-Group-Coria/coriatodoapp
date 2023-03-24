@@ -4,11 +4,11 @@
     <ul v-if="todoItems && todoItems.length">
       <li v-for="item in todoItems" :key="item.id" :class="{ underline: item.completed }">
 
-        <input v-model="item.title" :hidden="!item.isEditing" v-on:keyup.enter="updateItem(item)" v-on:focusout="onEditingItem(item, false)" autofocus />
-        <span :hidden="item.isEditing" v-on:dblclick="onEditingItem(item, true)">{{ item.title }}</span>
+        <input v-if="item.isEditing" v-model="item.title" @keyup.enter="updateItem(item)" @blur="onEditingItem(item, false)">
+        <span v-else @dblclick="onEditingItem(item, true)">{{ item.title }}</span>
 
-        <input v-model="item.completed" type="checkbox" :disabled="item.completed" v-on:input="completeItem(item.id)"/>
-        <button v-on:click="deleteItem(item.id)">Delete</button>
+        <input v-model="item.completed" type="checkbox" :disabled="item.completed" @input="completeItem(item.id)"/>
+        <button @click="deleteItem(item.id)">Delete</button>
       </li>
     </ul>
     <input v-model="newTodoItemTitle" placeholder="Add new..." @keyup.enter="addNew" />
@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { Ref, ref, onMounted } from 'vue';
+import { Ref, ref, onMounted} from 'vue';
 import { TodoItem } from '../models/todo-item';
 import todoApi from '../api/todo.api'
 
