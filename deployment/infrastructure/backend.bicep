@@ -1,40 +1,44 @@
-param webAppName string = 'ToDoAppBackend'
-param sku string = 'F1' // The SKU of App Service Plan
-param linuxFxVersion string = 'DOTNETCORE|7.0' // The runtime stack of web app
-param location string = resourceGroup().location // Location for all resources
-param repositoryUrl string = 'https://github.com/krusicbr/coriatodoapp.git'
-param branch string = 'main'
-var appServicePlanName = toLower('AppServicePlan-${webAppName}')
-var webSiteName = toLower('backend-${webAppName}')
+@description('Base name of the resource such as web app name and app service plan ')
+@minLength(2)
+param webAppName string = 'CoriaToDo'
 
-resource appServicePlan 'Microsoft.Web/serverfarms@2020-06-01' = {
+@description('The SKU of App Service Plan ')
+param sku string = 'B1'
+
+@description('The Runtime stack of current web app')
+param linuxFxVersion string = 'DOTNETCORE|7.0'
+
+@description('Location for all resources.')
+param location string = resourceGroup().location
+
+var webAppPortalName = '${webAppName}-webapp'
+var appServicePlanName = 'AppServicePlan-${webAppName}'
+
+resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
   name: appServicePlanName
   location: location
-  properties: {
-    reserved: true
-  }
   sku: {
     name: sku
   }
   kind: 'linux'
+  properties: {
+    reserved: true
+  }
 }
 
-resource appService 'Microsoft.Web/sites@2020-06-01' = {
-  name: webSiteName
+resource webAppPortal 'Microsoft.Web/sites@2022-03-01' = {
+  name: webAppPortalName
   location: location
+  kind: 'app'
   properties: {
     serverFarmId: appServicePlan.id
     siteConfig: {
       linuxFxVersion: linuxFxVersion
+      ftpsState: 'FtpsOnly'
     }
+    httpsOnly: true
   }
-}
-
-resource srcControls 'Microsoft.Web/sites/sourcecontrols@2021-01-01' = {
-  name: '${appService.name}/web'
-  properties: {
-    repoUrl: repositoryUrl
-    branch: branch
-    isManualIntegration: true
+  identity: {
+    type: 'SystemAssigned'
   }
 }
