@@ -15,5 +15,7 @@ jobs:
       - run: echo "Starting..."
       - run: git clone blabla
       - run: az login -u ${{ secrets.AZ_USERNAME }} -p ${{ secrets.AZ_PASSWORD }} --tenant ${{ secrets.AZ_TENANTID }}
+      - run: cd /github/workspace
+      - run: ls
       - run: az deployment group create -g ${{ secrets.AZ_TARGET_RG }} -f backend.bicep -c
       
