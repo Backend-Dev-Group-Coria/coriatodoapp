@@ -2,18 +2,33 @@ name: CI Pipeline
 
 on:
   workflow_dispatch:
+    inputs:
+      action_request:
+        type: choice
+        description: Action
+        options:
+        - Create
+        - Destroy
+        - Sing
   push:
     paths:
       - 'deployment/infrastructure/**.bicep'
   
 
 jobs:
-  test:
+  infra-work:
     runs-on: ubuntu-latest
     container: mcr.microsoft.com/azure-cli:latest
     steps:
       - uses: actions/checkout@v3
       - run: echo "Starting..."
       - run: az login -u ${{ secrets.AZ_USERNAME }} -p ${{ secrets.AZ_PASSWORD }} --tenant ${{ secrets.AZ_TENANTID }}
-      - run: az deployment group create -g ${{ secrets.AZ_TARGET_RG }} -f ./deployment/infrastructure/backend.bicep
+      - run: |
+          if [ ${{ github.event.inputs.action_request == 'Create' }} ]; then
+            echo "az deployment group create -g ${{ secrets.AZ_TARGET_RG }} -f ./deployment/infrastructure/backend.bicep"
+          elif [ ${{ github.event.inputs.action_request == 'Destroy' }} ]; then
+            echo "az deployment group create -g ${{ secrets.AZ_TARGET_RG }} -f ./deployment/infrastructure/backend-empty.bicep"
+          elif [ ${{ github.event.inputs.action_request == 'Sing' }} ]; then
+            echo "La La La..."
+          fi
       
