@@ -23,12 +23,16 @@ jobs:
       - uses: actions/checkout@v3
       - run: echo "Starting..."
       - run: az login -u ${{ secrets.AZ_USERNAME }} -p ${{ secrets.AZ_PASSWORD }} --tenant ${{ secrets.AZ_TENANTID }}
-      - run: |
-          if [ ${{ github.event.inputs.action_request == 'Create' }} ]; then
-            "az deployment group create -g ${{ secrets.AZ_TARGET_RG }} -f ./deployment/infrastructure/backend.bicep"
-          elif [ ${{ github.event.inputs.action_request == 'Destroy' }} ]; then
-            "az deployment group create -g ${{ secrets.AZ_TARGET_RG }} -f ./deployment/infrastructure/backend-empty.bicep"
-          elif [ ${{ github.event.inputs.action_request == 'Sing' }} ]; then
-            "La La La..."
-          fi
+      - name: Create Infra
+        if: ${{ github.event.inputs.action_request == 'Create' }}
+        id: create-infra
+        run: az deployment group create -g ${{ secrets.AZ_TARGET_RG }} -f ./deployment/infrastructure/backend.bicep
+      - name: Delete Infra
+        if: ${{ github.event.inputs.action_request == 'Destroy' }}
+        id: delete-infra
+        run: az deployment group create -g ${{ secrets.AZ_TARGET_RG }} -f ./deployment/infrastructure/backend-empty.bicep
+      - name: Sing about Infra
+        if: ${{ github.event.inputs.action_request == 'Sing' }}
+        id: sing-about-infra
+        run: echo "La La La..."
       
