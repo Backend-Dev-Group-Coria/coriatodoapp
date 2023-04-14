@@ -25,10 +25,10 @@ jobs:
       - run: az login -u ${{ secrets.AZ_USERNAME }} -p ${{ secrets.AZ_PASSWORD }} --tenant ${{ secrets.AZ_TENANTID }}
       - run: |
           if [ ${{ github.event.inputs.action_request == 'Create' }} ]; then
-            echo "az deployment group create -g ${{ secrets.AZ_TARGET_RG }} -f ./deployment/infrastructure/backend.bicep"
+            "az deployment group create -g ${{ secrets.AZ_TARGET_RG }} -f ./deployment/infrastructure/backend.bicep"
           elif [ ${{ github.event.inputs.action_request == 'Destroy' }} ]; then
-            echo "az deployment group create -g ${{ secrets.AZ_TARGET_RG }} -f ./deployment/infrastructure/backend-empty.bicep"
+            "az deployment group create -g ${{ secrets.AZ_TARGET_RG }} -f ./deployment/infrastructure/backend-empty.bicep"
           elif [ ${{ github.event.inputs.action_request == 'Sing' }} ]; then
-            echo "La La La..."
+            "La La La..."
           fi
       
