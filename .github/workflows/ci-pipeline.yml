@@ -35,4 +35,3 @@ jobs:
         if: ${{ github.event.inputs.action_request == 'Sing' }}
         id: sing-about-infra
         run: echo "La La La..."
-      
