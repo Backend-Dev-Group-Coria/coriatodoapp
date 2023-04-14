@@ -13,4 +13,4 @@ jobs:
     container: mcr.microsoft.com/azure-cli:latest
     steps:
       - run: echo "Starting..."
-      - run: az login -u ${{ secrets.az_username }} -p ${{ secrets.az_password }} --tenant ${{ secrets.az_tenant }}
+      - run: az login -u ${{ secrets.AZ_USERNAME }} -p ${{ secrets.AZ_PASSWORD }} --tenant ${{ secrets.AZ_TENANTID }}
