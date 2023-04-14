@@ -1,6 +1,11 @@
 name: CI Pipeline
 
-on: workflow_call
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'deployment/infrastructure/**.bicep'
+  
 
 jobs:
   test:
