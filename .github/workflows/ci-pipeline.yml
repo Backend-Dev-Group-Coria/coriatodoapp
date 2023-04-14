@@ -1,0 +1,11 @@
+name: CI Pipeline
+
+on: workflow_call
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container: mcr.microsoft.com/azure-cli:latest
+    steps:
+      - run: echo "Starting..."
+      - run: az login
