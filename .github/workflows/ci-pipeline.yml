@@ -15,7 +15,5 @@ jobs:
       - uses: actions/checkout@v3
       - run: echo "Starting..."
       - run: az login -u ${{ secrets.AZ_USERNAME }} -p ${{ secrets.AZ_PASSWORD }} --tenant ${{ secrets.AZ_TENANTID }}
-      - run: cd ${GITHUB_WORKSPACE}/deployment/infrastructure/
-      - run: ls -la
-      - run: az deployment group create -g ${{ secrets.AZ_TARGET_RG }} -f backend.bicep -c
+      - run: az deployment group create -g ${{ secrets.AZ_TARGET_RG }} -f ${{GITHUB_WORKSPACE}}/deployment/infrastructure/backend.bicep -c
       
