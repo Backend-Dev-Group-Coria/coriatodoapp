@@ -12,9 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     container: mcr.microsoft.com/azure-cli:latest
     steps:
+      - uses: actions/checkout@v3
       - run: echo "Starting..."
       - run: az login -u ${{ secrets.AZ_USERNAME }} -p ${{ secrets.AZ_PASSWORD }} --tenant ${{ secrets.AZ_TENANTID }}
-      - run: cd /__w/coriatodoapp/coriatodoapp/
-      - run: ls
+      - run: cd ${GITHUB_WORKSPACE}/deployment/infrastructure/
+      - run: ls -la
       - run: az deployment group create -g ${{ secrets.AZ_TARGET_RG }} -f backend.bicep -c
       
