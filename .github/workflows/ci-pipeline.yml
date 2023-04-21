@@ -30,7 +30,7 @@ jobs:
       - name: Delete Infra
         if: ${{ github.event.inputs.action_request == 'Destroy' }}
         id: delete-infra
-        run: az deployment group create -g ${{ secrets.AZ_TARGET_RG }} -f ./deployment/infrastructure/backend-empty.bicep -mode complete
+        run: az deployment group create -g ${{ secrets.AZ_TARGET_RG }} -f ./deployment/infrastructure/backend-empty.bicep --mode complete
       - name: Sing about Infra
         if: ${{ github.event.inputs.action_request == 'Sing' }}
         id: sing-about-infra
