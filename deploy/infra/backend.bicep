@@ -1,6 +1,6 @@
 @description('Base name of the resource such as web app name and app service plan ')
 @minLength(2)
-param webAppName string = 'CoriaToDo'
+param webAppName string = 'CoriaToDo' 
 
 @description('The SKU of App Service Plan ')
 param sku string = 'B1'
