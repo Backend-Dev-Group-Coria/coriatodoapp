@@ -6,12 +6,12 @@
         {
             // looking for ".env" file in "CoriaToDo" folder
             var dir = Directory.GetParent(Directory.GetCurrentDirectory());
-            while (dir != null && dir.Name != "CoriaToDo")
+            /*while (dir != null && dir.Name != "CoriaToDo.API")
             {
                 dir = dir.Parent;
             }
             if (dir == null) return;
-
+            */
             var filePath = Path.Combine(dir.FullName, ".env");
             if (!File.Exists(filePath)) return;
 
