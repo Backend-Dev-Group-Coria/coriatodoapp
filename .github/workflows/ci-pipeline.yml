@@ -24,7 +24,7 @@ jobs:
       - run: echo "Starting..."
       - run: az login -u ${{ secrets.AZ_USERNAME }} -p ${{ secrets.AZ_PASSWORD }} --tenant ${{ secrets.AZ_TENANTID }}
       - name: Create Infra
-        if: ${{ github.event.inputs.action_request == 'Create' }}
+        if: ${{ github.event.inputs.action_request == 'Create' || github.event.inputs.action_request == '' }}
         id: create-infra
         run: az deployment group create -g ${{ secrets.AZ_TARGET_RG }} -f ./deploy/infra/backend.bicep
       - name: Delete Infra
