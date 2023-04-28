@@ -26,7 +26,7 @@ jobs:
       - name: Create Infra
         if: ${{ github.event.inputs.action_request == 'Create' || github.event.inputs.action_request == '' }}
         id: create-infra
-        run: az deployment group create -g ${{ secrets.AZ_TARGET_RG }} -f ./deploy/infra/backend.bicep
+        run: az deployment group create -g ${{ secrets.AZ_TARGET_RG }} -f ./deploy/infra/backend.bicep --parameters administratorLogin=${{ secrets.AZ_POSTGRES_USERNAME }} administratorLoginPassword=${{ secrets.AZ_POSTGRES_PASSWORD }}
       - name: Delete Infra
         if: ${{ github.event.inputs.action_request == 'Destroy' }}
         id: delete-infra
