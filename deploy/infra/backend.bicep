@@ -129,7 +129,7 @@ resource connectionstrings 'Microsoft.Web/sites/config@2022-03-01' = {
   parent: webAppPortal
   properties: {
       PostgresDefaultConnection: {
-        value: 'Database=todo_local; Data Source=backend-dev-group-postgres.postgres.database.azure.com; User Id=pr54rAdmin@backend-dev-group-postgres; Password=Password1'
+        value: 'Database=postgres; Data Source=backend-dev-group-postgres.postgres.database.azure.com; User Id=pr54rAdmin@backend-dev-group-postgres; Password=Password1'
         type: 'Custom'
       }
   }
