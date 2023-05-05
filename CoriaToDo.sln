@@ -5,7 +5,16 @@ VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoriaToDo.API", "CoriaToDo.API\CoriaToDo.API.csproj", "{78582AAB-7F94-447B-9613-9FC1C80666E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoriaToDo.API.Tests", "CoriaToDo.API.Tests\CoriaToDo.API.Tests.csproj", "{91FA2E41-F401-41E6-BF0D-27E7177C0D88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoriaToDo.API.Tests", "CoriaToDo.API.Tests\CoriaToDo.API.Tests.csproj", "{91FA2E41-F401-41E6-BF0D-27E7177C0D88}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deploy", "deploy", "{315527C0-D23C-4F89-B3FF-DCA98BC575A2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "infra", "infra", "{F967D80F-84A0-4234-8CB3-38C4477D37CF}"
+	ProjectSection(SolutionItems) = preProject
+		deploy\infra\backend-empty.bicep = deploy\infra\backend-empty.bicep
+		deploy\infra\backend.bicep = deploy\infra\backend.bicep
+		deploy\infra\trigger.bicep = deploy\infra\trigger.bicep
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,6 +33,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F967D80F-84A0-4234-8CB3-38C4477D37CF} = {315527C0-D23C-4F89-B3FF-DCA98BC575A2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BF8F86A4-F4AF-468B-95E1-D35011779370}
