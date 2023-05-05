@@ -41,11 +41,11 @@ param skuSizeMB int = 32000
 
 @description('Azure Database for PostgreSQL pricing tier')
 @allowed([
-  'Basic'
+  'Standard'
   'GeneralPurpose'
   'MemoryOptimized'
 ])
-param skuTier string = 'Basic'
+param skuTier string = 'Standard'
 
 @description('Azure Database for PostgreSQL sku family')
 param skuFamily string = 'Gen5'
