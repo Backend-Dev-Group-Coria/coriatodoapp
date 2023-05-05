@@ -34,18 +34,18 @@ param administratorLoginPassword string
 param skuCapacity int = 1
 
 @description('Azure Database for PostgreSQL sku name ')
-param skuName string = 'B1ms'
+param skuName string = 'B_Gen5_1'
 
 @description('Azure Database for PostgreSQL Sku Size ')
 param skuSizeMB int = 32000
 
 @description('Azure Database for PostgreSQL pricing tier')
 @allowed([
-  'Standard'
+  'Basic'
   'GeneralPurpose'
   'MemoryOptimized'
 ])
-param skuTier string = 'Standard'
+param skuTier string = 'Basic'
 
 @description('Azure Database for PostgreSQL sku family')
 param skuFamily string = 'Gen5'
