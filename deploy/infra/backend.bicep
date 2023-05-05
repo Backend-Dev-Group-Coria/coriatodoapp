@@ -60,7 +60,7 @@ param skuFamily string = 'Gen5'
   '11'
   '14'
 ])
-param postgresqlVersion string = '14'
+param postgresqlVersion string = '11'
 
 @description('PostgreSQL Server backup retention days')
 param backupRetentionDays int = 7
