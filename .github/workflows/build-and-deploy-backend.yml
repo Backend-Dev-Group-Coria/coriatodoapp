@@ -34,11 +34,18 @@ jobs:
           dotnet restore
           dotnet build --configuration Release
           dotnet publish -c Release -p --property:PublishDir='${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/output' 
+      
+      # Login to Azure via Service Connection 
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZ_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZ_TENANT_ID }}
+          subscription-id: ${{ secrets.AZ_SUBSCRIPTION_ID }}
           
       # Deploy to Azure Web apps
       - name: 'Run Azure webapp deploy action using publish profile credentials'
         uses: azure/webapps-deploy@v2
         with: 
           app-name: ${{ env.AZURE_WEBAPP_NAME }} # Replace with your app name
-          publish-profile: ${{ secrets.AZ_WEBAPP_PUB_PROFILE  }} # Define secret variable in repository settings as per action documentation
           package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/CoriaToDo.API/output'
