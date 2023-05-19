@@ -3,3 +3,4 @@ package-lock.json
 frontend/.vs/
 deploy/.vs/
 .env
+.vscode/
