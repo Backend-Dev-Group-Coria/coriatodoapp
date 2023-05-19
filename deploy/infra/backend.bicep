@@ -68,6 +68,8 @@ param backupRetentionDays int = 7
 @description('Geo-Redundant Backup setting')
 param geoRedundantBackup string = 'Disabled'
 
+// WebApp resources
+
 resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
   name: appServicePlanName
   location: location
@@ -118,5 +120,17 @@ resource server 'Microsoft.DBforPostgreSQL/servers@2017-12-01' = {
       geoRedundantBackup: geoRedundantBackup
     }
     publicNetworkAccess: 'Enabled'
+  }
+}
+
+resource connectionstrings 'Microsoft.Web/sites/config@2022-03-01' = {
+  name: 'connectionstrings'
+  kind: 'string'
+  parent: webAppPortal
+  properties: {
+      PostgresDefaultConnection: {
+        value: 'Database=postgres; Data Source=${serverName}.postgres.database.azure.com; User Id=${administratorLogin}; Password=${administratorLoginPassword}'
+        type: 'Custom'
+      }
   }
 }
