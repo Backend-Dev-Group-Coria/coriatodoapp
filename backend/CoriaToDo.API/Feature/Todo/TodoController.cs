@@ -25,10 +25,17 @@ public class TodoController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<List<ToDoItem>> List()
+    public async Task<IActionResult> List()
     {
-        var items = await toDoDbContext.ToDoItems.Where(i => i.UserId == _sessionContext.UserId).OrderBy(i => i.Order).ToListAsync();
-        return items;
+        try
+        {
+            var items = await toDoDbContext.ToDoItems.Where(i => i.UserId == _sessionContext.UserId).OrderBy(i => i.Order).ToListAsync();
+            return Ok(items);
+        }
+        catch (Exception ex)
+        {
+            return Ok(ex.StackTrace.ToString());
+        }
     }
 
     [HttpPost]
