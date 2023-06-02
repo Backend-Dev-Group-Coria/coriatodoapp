@@ -3,6 +3,7 @@ using AutoMapper;
 using CoriaToDo.API.Data;
 using CoriaToDo.API.Feature.Todo.Model;
 using CoriaToDo.API.Feature.Todo.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.Versioning;
@@ -31,15 +32,12 @@ public class TodoController : ControllerBase
     {
         try
         {
-            var connStr = _config.GetConnectionString("PostgresDefaultConnection");
-            return Ok(connStr);
-
             var items = await toDoDbContext.ToDoItems.Where(i => i.UserId == _sessionContext.UserId).OrderBy(i => i.Order).ToListAsync();
             return Ok(items);
         }
         catch (Exception ex)
         {
-            return Ok(ex.ToString());
+            return StatusCode(500, ex);
         }
     }
 
