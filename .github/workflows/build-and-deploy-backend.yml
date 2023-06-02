@@ -33,7 +33,7 @@ jobs:
         run: |
           dotnet restore
           dotnet build --configuration Release
-          dotnet publish -c Release -p --property:PublishDir='${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/output' 
+          dotnet publish -c Release -p --property:PublishDir='output' 
       
       # Login to Azure via Service Connection 
       - name: 'Az CLI login'
