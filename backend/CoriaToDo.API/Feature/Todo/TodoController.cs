@@ -16,11 +16,13 @@ public class TodoController : ControllerBase
     private readonly ToDoDbContext toDoDbContext;
     private readonly IMapper mapper;
     private readonly SessionContext _sessionContext;
+    private readonly IConfiguration _config;
 
-    public TodoController(ToDoDbContext toDoDbContext, IMapper mapper, SessionContext sessionContext)
+    public TodoController(ToDoDbContext toDoDbContext, IMapper mapper, SessionContext sessionContext, IConfiguration config)
     {
         this.mapper = mapper;
         _sessionContext = sessionContext;
+        _config = config;
         this.toDoDbContext = toDoDbContext;
     }
 
@@ -29,6 +31,9 @@ public class TodoController : ControllerBase
     {
         try
         {
+            var connStr = _config.GetConnectionString("PostgresDefaultConnection");
+            return Ok(connStr);
+
             var items = await toDoDbContext.ToDoItems.Where(i => i.UserId == _sessionContext.UserId).OrderBy(i => i.Order).ToListAsync();
             return Ok(items);
         }
