@@ -34,7 +34,7 @@ public class TodoController : ControllerBase
         }
         catch (Exception ex)
         {
-            return Ok(ex.StackTrace.ToString());
+            return Ok(ex.ToString());
         }
     }
 
