@@ -39,10 +39,8 @@ jobs:
       - name: 'Az CLI login'
         uses: azure/login@v1
         with:
-          client-id: ${{ secrets.AZ_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZ_TENANT_ID }}
-          subscription-id: ${{ secrets.AZ_SUBSCRIPTION_ID }}
-          client-secret: ${{ secrets.AZ_CLIENT_SECRET }}
+          creds: ${{ secrets.AZ_CREDS }}
+          enable-AzPSSession: true
           
       # Deploy to Azure Web apps
       - name: 'Run Azure webapp deploy action using publish profile credentials'
