@@ -43,13 +43,13 @@ namespace CoriaToDo.API
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
-
-                MigrateDb(app);
             }
+
+            MigrateDb(app);
 
             app.UseCors(CORS_FILTER_NAME);
 
