@@ -116,7 +116,7 @@ resource connectionstrings 'Microsoft.Web/sites/config@2022-03-01' = {
   parent: webAppPortal
   properties: {
       PostgresDefaultConnection: {
-        value: 'Database=postgres; Server=${serverName}.postgres.database.azure.com; User Id=${administratorLogin}@${serverName}; Password=${administratorLoginPassword}; SslMode=Require; Trust Server Certificate=true;'
+        value: 'Database=postgres; Server=${serverName}.postgres.database.azure.com; User Id=${administratorLogin}; Password=${administratorLoginPassword}; SslMode=Require; Trust Server Certificate=true;'
         type: 'Custom'
       }
   }
