@@ -140,10 +140,7 @@ resource symbolicname 'Microsoft.Web/sites/config@2022-03-01' = {
   kind: 'string'
   parent: webAppPortal
   properties: {
-      {
-        name: 'ASPNETCORE_ENVIRONMENT',
-        value: 'Staging'
-      }
+      'ASPNETCORE_ENVIRONMENT': 'Staging'
   }
 }
 
