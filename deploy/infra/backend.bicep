@@ -30,25 +30,14 @@ param administratorLogin string
 @secure()
 param administratorLoginPassword string
 
-@description('Azure Database for PostgreSQL compute capacity in vCores (2,4,8,16,32)')
-param skuCapacity int = 1
-
 @description('Azure Database for PostgreSQL sku name ')
-param skuName string = 'B_Gen5_1'
-
-@description('Azure Database for PostgreSQL Sku Size ')
-param skuSizeMB int = 5120
+param skuName string = 'Standard_B1ms'
 
 @description('Azure Database for PostgreSQL pricing tier')
-@allowed([
-  'Basic'
-  'GeneralPurpose'
-  'MemoryOptimized'
-])
-param skuTier string = 'Basic'
+param skuTier string = 'Burstable'
 
-@description('Azure Database for PostgreSQL sku family')
-param skuFamily string = 'Gen5'
+@description('Storage Size for Postgres Database')
+param postgresStorageSizeGB int = 32
 
 @description('PostgreSQL version')
 @allowed([
@@ -60,7 +49,7 @@ param skuFamily string = 'Gen5'
   '11'
   '14'
 ])
-param postgresqlVersion string = '11'
+param postgresqlVersion string = '14'
 
 @description('PostgreSQL Server backup retention days')
 param backupRetentionDays int = 7
@@ -99,27 +88,25 @@ resource webAppPortal 'Microsoft.Web/sites@2022-03-01' = {
   }
 }
 
-resource server 'Microsoft.DBforPostgreSQL/servers@2017-12-01' = {
+resource server 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' = {
   name: serverName
   location: location
   sku: {
     name: skuName
     tier: skuTier
-    capacity: skuCapacity
-    size: '${skuSizeMB}'
-    family: skuFamily
   }
   properties: {
     createMode: 'Default'
-    version: postgresqlVersion
     administratorLogin: administratorLogin
     administratorLoginPassword: administratorLoginPassword
-    storageProfile: {
-      storageMB: skuSizeMB
+    storage: {
+      storageSizeGB: postgresStorageSizeGB
+    }
+    backup: {
       backupRetentionDays: backupRetentionDays
       geoRedundantBackup: geoRedundantBackup
     }
-    publicNetworkAccess: 'Enabled'
+    version: postgresqlVersion
   }
 }
 
@@ -144,3 +131,11 @@ resource symbolicname 'Microsoft.Web/sites/config@2022-03-01' = {
   }
 }
 
+resource allowAccessToAzureServices 'Microsoft.DBforPostgreSQL/flexibleServers/firewallRules@2022-12-01' = {
+  name: 'allow-access-to-azure-services'
+  parent: server
+  properties: {
+    startIpAddress: '0.0.0.0'
+    endIpAddress: '0.0.0.0'
+  }
+}
