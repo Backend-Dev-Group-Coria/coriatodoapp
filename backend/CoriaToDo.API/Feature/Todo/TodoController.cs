@@ -3,6 +3,7 @@ using AutoMapper;
 using CoriaToDo.API.Data;
 using CoriaToDo.API.Feature.Todo.Model;
 using CoriaToDo.API.Feature.Todo.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.Versioning;
@@ -16,19 +17,28 @@ public class TodoController : ControllerBase
     private readonly ToDoDbContext toDoDbContext;
     private readonly IMapper mapper;
     private readonly SessionContext _sessionContext;
+    private readonly IConfiguration _config;
 
-    public TodoController(ToDoDbContext toDoDbContext, IMapper mapper, SessionContext sessionContext)
+    public TodoController(ToDoDbContext toDoDbContext, IMapper mapper, SessionContext sessionContext, IConfiguration config)
     {
         this.mapper = mapper;
         _sessionContext = sessionContext;
+        _config = config;
         this.toDoDbContext = toDoDbContext;
     }
 
     [HttpGet]
-    public async Task<List<ToDoItem>> List()
+    public async Task<IActionResult> List()
     {
-        var items = await toDoDbContext.ToDoItems.Where(i => i.UserId == _sessionContext.UserId).OrderBy(i => i.Order).ToListAsync();
-        return items;
+        try
+        {
+            var items = await toDoDbContext.ToDoItems.Where(i => i.UserId == _sessionContext.UserId).OrderBy(i => i.Order).ToListAsync();
+            return Ok(items);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex);
+        }
     }
 
     [HttpPost]
