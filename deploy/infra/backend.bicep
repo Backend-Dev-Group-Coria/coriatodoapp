@@ -29,7 +29,6 @@ var backendWebAppPortalName = '${backendWebAppName}-webapp'
 var backendAppServicePlanName = 'backendAppServicePlan-${backendWebAppName}'
 
 var frontendWebAppPortalName = '${frontendWebAppName}-webapp'
-var frontendAppServicePlanName = 'frontendAppServicePlan-${frontendWebAppName}'
 
 //Database Parameters
 
@@ -108,14 +107,10 @@ resource backendWebAppPortal 'Microsoft.Web/sites@2022-03-01' = {
 resource frontendWebAppPortal 'Microsoft.Web/staticSites@2022-03-01' = {
   name: frontendWebAppPortalName
   sku: {
-    name: 'Standard'
-    tier: 'Standard'
+    name: 'Free'
+    tier: 'Free'
   }
   location: staticLocation
-  kind: 'app'
-  identity: {
-    type: 'SystemAssigned'
-  }
 }
 
 resource server 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' = {
