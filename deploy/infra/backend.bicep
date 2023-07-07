@@ -2,7 +2,8 @@
 
 @description('Base name of the resource such as web app name and app service plan ')
 @minLength(2)
-param webAppName string = 'CoriaToDo'
+param backendWebAppName string = 'coriatodo-backend'
+param frontendWebAppName string = 'coriatodo-frontend'
 
 @description('The SKU of App Service Plan ')
 param sku string = 'B1'
@@ -13,8 +14,11 @@ param linuxFxVersion string = 'DOTNETCORE|7.0'
 @description('Location for all resources.')
 param location string = resourceGroup().location
 
-var webAppPortalName = '${webAppName}-webapp'
-var appServicePlanName = 'AppServicePlan-${webAppName}'
+var backendWebAppPortalName = '${backendWebAppName}-webapp'
+var backendAppServicePlanName = 'backendAppServicePlan-${backendWebAppName}'
+
+var frontendWebAppPortalName = '${frontendWebAppName}-webapp'
+var frontendAppServicePlanName = 'frontendAppServicePlan-${frontendWebAppName}'
 
 //Database Parameters
 
@@ -57,10 +61,10 @@ param backupRetentionDays int = 7
 @description('Geo-Redundant Backup setting')
 param geoRedundantBackup string = 'Disabled'
 
-// WebApp resources
+// Backend WebApp resources
 
-resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
-  name: appServicePlanName
+resource backendAppServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
+  name: backendAppServicePlanName
   location: location
   sku: {
     name: sku
@@ -71,12 +75,12 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
   }
 }
 
-resource webAppPortal 'Microsoft.Web/sites@2022-03-01' = {
-  name: webAppPortalName
+resource backendWebAppPortal 'Microsoft.Web/sites@2022-03-01' = {
+  name: backendWebAppPortalName
   location: location
   kind: 'app'
   properties: {
-    serverFarmId: appServicePlan.id
+    serverFarmId: backendAppServicePlan.id
     siteConfig: {
       linuxFxVersion: linuxFxVersion
       ftpsState: 'FtpsOnly'
@@ -87,6 +91,30 @@ resource webAppPortal 'Microsoft.Web/sites@2022-03-01' = {
     type: 'SystemAssigned'
   }
 }
+
+// Frontend WebApp resources
+
+resource frontendAppServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
+  name: frontendAppServicePlanName
+  location: location
+  sku: {
+    name: sku
+  }
+  kind: 'linux'
+  properties: {
+    reserved: true
+  }
+}
+
+resource frontendWebAppPortal 'Microsoft.Web/staticSites@2022-03-01' = {
+  name: frontendWebAppPortalName
+  location: location
+  kind: 'app'
+  identity: {
+    type: 'SystemAssigned'
+  }
+}
+
 
 resource server 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' = {
   name: serverName
@@ -113,7 +141,7 @@ resource server 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' = {
 resource connectionstrings 'Microsoft.Web/sites/config@2022-03-01' = {
   name: 'connectionstrings'
   kind: 'string'
-  parent: webAppPortal
+  parent: backendWebAppPortal
   properties: {
       PostgresDefaultConnection: {
         value: 'Database=postgres; Server=${serverName}.postgres.database.azure.com; User Id=${administratorLogin}; Password=${administratorLoginPassword}; SslMode=Require; Trust Server Certificate=true;'
@@ -125,7 +153,7 @@ resource connectionstrings 'Microsoft.Web/sites/config@2022-03-01' = {
 resource symbolicname 'Microsoft.Web/sites/config@2022-03-01' = {
   name: 'appsettings'
   kind: 'string'
-  parent: webAppPortal
+  parent: backendWebAppPortal
   properties: {
       ASPNETCORE_ENVIRONMENT: 'Staging'
   }
