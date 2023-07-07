@@ -14,6 +14,17 @@ param linuxFxVersion string = 'DOTNETCORE|7.0'
 @description('Location for all resources.')
 param location string = resourceGroup().location
 
+@description('Allowed locations for static website')
+@allowed([
+  'westus2'
+  'centralus'
+  'eastus2'
+  'westeurope'
+  'eastasia'
+  'eastasiastage'
+])
+param staticLocation string = 'westeurope'
+
 var backendWebAppPortalName = '${backendWebAppName}-webapp'
 var backendAppServicePlanName = 'backendAppServicePlan-${backendWebAppName}'
 
@@ -96,7 +107,7 @@ resource backendWebAppPortal 'Microsoft.Web/sites@2022-03-01' = {
 
 resource frontendAppServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
   name: frontendAppServicePlanName
-  location: location
+  location: staticLocation
   sku: {
     name: sku
   }
@@ -108,7 +119,7 @@ resource frontendAppServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
 
 resource frontendWebAppPortal 'Microsoft.Web/staticSites@2022-03-01' = {
   name: frontendWebAppPortalName
-  location: location
+  location: staticLocation
   kind: 'app'
   identity: {
     type: 'SystemAssigned'
