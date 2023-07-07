@@ -105,27 +105,18 @@ resource backendWebAppPortal 'Microsoft.Web/sites@2022-03-01' = {
 
 // Frontend WebApp resources
 
-resource frontendAppServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
-  name: frontendAppServicePlanName
-  location: staticLocation
-  sku: {
-    name: sku
-  }
-  kind: 'linux'
-  properties: {
-    reserved: true
-  }
-}
-
 resource frontendWebAppPortal 'Microsoft.Web/staticSites@2022-03-01' = {
   name: frontendWebAppPortalName
+  sku: {
+    name: 'Standard'
+    tier: 'Standard'
+  }
   location: staticLocation
   kind: 'app'
   identity: {
     type: 'SystemAssigned'
   }
 }
-
 
 resource server 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' = {
   name: serverName
