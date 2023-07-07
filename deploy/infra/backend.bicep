@@ -8,6 +8,12 @@ param frontendWebAppName string = 'coriatodo-frontend'
 @description('The SKU of App Service Plan ')
 param sku string = 'B1'
 
+@description('The SKU for the static site. https://docs.microsoft.com/en-us/azure/templates/microsoft.web/staticsites?tabs=bicep#skudescription')
+param staticSku object = {
+  name: 'Standard'
+  tier: 'Standard'
+}
+
 @description('The Runtime stack of current web app')
 param linuxFxVersion string = 'DOTNETCORE|7.0'
 
@@ -106,11 +112,14 @@ resource backendWebAppPortal 'Microsoft.Web/sites@2022-03-01' = {
 
 resource frontendWebAppPortal 'Microsoft.Web/staticSites@2022-03-01' = {
   name: frontendWebAppPortalName
-  sku: {
-    name: 'Free'
-    tier: 'Free'
-  }
   location: staticLocation
+  sku: staticSku
+  identity: {
+         type: 'SystemAssigned'
+       }
+  properties: {
+        allowConfigFileUpdates: true
+      }
 }
 
 resource server 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' = {
