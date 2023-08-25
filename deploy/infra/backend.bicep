@@ -17,8 +17,12 @@ param staticSku object = {
 @description('The Runtime stack of current web app')
 param linuxFxVersion string = 'DOTNETCORE|7.0'
 
-@description('Location for all resources.')
-param location string = resourceGroup().location
+@description('Allowed locations for backend webapp')
+@allowed([
+  'westeurope'
+])
+
+param location string = 'westeurope'
 
 @description('Allowed locations for static website')
 @allowed([
