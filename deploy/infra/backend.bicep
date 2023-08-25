@@ -16,6 +16,7 @@ param staticSku object = {
 
 @description('The Runtime stack of current web app')
 param linuxFxVersion string = 'DOTNETCORE|7.0'
+param frontendFxVersion string = 'node|14-lts'
 
 @description('Allowed locations for backend webapp')
 @allowed([
@@ -39,6 +40,7 @@ var backendWebAppPortalName = '${backendWebAppName}-webapp'
 var backendAppServicePlanName = 'backendAppServicePlan-${backendWebAppName}'
 
 var frontendWebAppPortalName = '${frontendWebAppName}-webapp'
+var frontendAppServicePlanName = 'frontendAppServicePlan-${frontendWebAppName}'
 
 //Database Parameters
 
@@ -114,16 +116,33 @@ resource backendWebAppPortal 'Microsoft.Web/sites@2022-03-01' = {
 
 // Frontend WebApp resources
 
-resource frontendWebAppPortal 'Microsoft.Web/staticSites@2022-03-01' = {
-  name: frontendWebAppPortalName
-  location: staticLocation
-  sku: staticSku
-  identity: {
-         type: 'SystemAssigned'
-       }
+resource frontendAppServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
+  name: frontendAppServicePlanName
+  location: location
+  sku: {
+    name: sku
+  }
+  kind: 'linux'
   properties: {
-        allowConfigFileUpdates: true
-      }
+    reserved: true
+  }
+}
+
+resource frontendWebAppPortal 'Microsoft.Web/sites@2022-03-01' = {
+  name: frontendWebAppPortalName
+  location: location
+  kind: 'app'
+  properties: {
+    serverFarmId: frontendAppServicePlan.id
+    siteConfig: {
+      linuxFxVersion: frontendFxVersion
+      ftpsState: 'FtpsOnly'
+    }
+    httpsOnly: true
+  }
+  identity: {
+    type: 'SystemAssigned'
+  }
 }
 
 resource server 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' = {
