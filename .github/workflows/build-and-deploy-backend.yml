@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_WEBAPP_NAME: CoriaToDo-webapp    # set this to your application's name
+  AZURE_WEBAPP_NAME: coriatodo-backend-webapp    # set this to your application's name
   AZURE_WEBAPP_PACKAGE_PATH: './backend'      # set this to the path to your web app project, defaults to the repository root
   DOTNET_VERSION: '7.0.x'           # set this to the dot net version to use
 
