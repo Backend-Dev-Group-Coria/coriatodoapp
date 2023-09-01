@@ -59,8 +59,10 @@ jobs:
       uses: actions/download-artifact@v3
       with:
         name: coriatodo-app
+        path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
     - name: unzip artifact for deployment
+      working-directory: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
       run: unzip release.zip
 
       # Login to Azure via Service Connection 
