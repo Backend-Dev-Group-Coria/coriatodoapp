@@ -35,7 +35,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script type="module" setup lang="ts">
 import { Ref, ref, onMounted, nextTick } from "vue";
 import { TodoItem } from "../models/todo-item";
 import todoApi from "../api/todo.api";

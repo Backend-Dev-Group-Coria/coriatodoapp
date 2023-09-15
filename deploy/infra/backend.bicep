@@ -137,6 +137,7 @@ resource frontendWebAppPortal 'Microsoft.Web/sites@2022-03-01' = {
     siteConfig: {
       linuxFxVersion: frontendFxVersion
       ftpsState: 'FtpsOnly'
+      appCommandLine: 'npm run dev'      
     }
     httpsOnly: true
   }
