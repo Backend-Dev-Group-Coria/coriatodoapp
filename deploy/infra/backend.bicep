@@ -16,7 +16,7 @@ param staticSku object = {
 
 @description('The Runtime stack of current web app')
 param linuxFxVersion string = 'DOTNETCORE|7.0'
-param frontendFxVersion string = 'node|14-lts'
+param frontendFxVersion string = 'node|16-lts'
 
 @description('Allowed locations for backend webapp')
 @allowed([
@@ -179,12 +179,21 @@ resource connectionstrings 'Microsoft.Web/sites/config@2022-03-01' = {
   }
 }
 
-resource symbolicname 'Microsoft.Web/sites/config@2022-03-01' = {
+resource backendAppSettings 'Microsoft.Web/sites/config@2022-03-01' = {
   name: 'appsettings'
   kind: 'string'
   parent: backendWebAppPortal
   properties: {
       ASPNETCORE_ENVIRONMENT: 'Staging'
+  }
+}
+
+resource frontendAppSettings 'Microsoft.Web/sites/config@2022-03-01' = {
+  name: 'appsettings'
+  kind: 'string'
+  parent: frontendWebAppPortal
+  properties: {
+    WEBSITES_PORT: '8081'
   }
 }
 
