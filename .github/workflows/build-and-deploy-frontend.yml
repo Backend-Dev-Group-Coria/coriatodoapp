@@ -45,9 +45,8 @@ jobs:
     - name: Upload artifact for deployment job      
       uses: actions/upload-artifact@v3
       with:
-        working-directory: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
         name: coriatodo-app
-        path: release.zip
+        path: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/release.zip'        
 
   deploy:
     permissions:
