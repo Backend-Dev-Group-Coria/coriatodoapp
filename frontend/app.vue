@@ -5,7 +5,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script type="module" setup lang="ts">
 import { Ref, ref, onMounted } from 'vue';
 import todoList from './components/todoList.vue';
 
