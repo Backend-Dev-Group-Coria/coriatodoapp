@@ -12,6 +12,6 @@
   },
   "dependencies": {
     "@nuxt/test-utils": "3.2.0",
-    "vitest": "0.28.4"
+    "vitest": "3.2.6"
   }
 }
